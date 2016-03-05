@@ -21,6 +21,7 @@ if __name__ == "__main__":
     packages_raw_info = packages_raw_info.split("\n")
     for line in packages_raw_info:
         if line:
+            # regex catches {binary:Package} and {Version} from dpkg output
             package_re = re.compile(r"(.+)\t(.+)\t.*")
             package_info = package_re.match(line)
             package_dict = {

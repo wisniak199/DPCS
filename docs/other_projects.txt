@@ -1,0 +1,23 @@
+# Automatic problem solvers
+##### Red Hat Access - Red Hat Access: Diagnose and Red Hat Access: Analyze
+
+It can perform problem determination on error codes, stacktraces, and logs. 
+Red Hat Access: Analyze can perform log-file analysis using Red Hat servers.
+
+# Logs as source of data for machine learning
+
+##### Pulse
+Learns from log files and searches for anomalies.
+https://github.com/gophergala2016/Pulse
+
+##### Entropy
+Uses natural language processing for parsing logs.
+https://github.com/jbowles/entropy
+
+##### ?CLUEBOX: A Performance Log Analyzer for Automated Troubleshooting?
+Uses machine learning and logs for automated troubleshooting of performance problems.
+https://www.usenix.org/legacy/event/wasl08/tech/full_papers/sandeep/sandeep_html/
+
+##### ?Automatic Log Analysis using Machine Learning?
+Applies machine learning techniques to do automated log analysis. Compares several variants of clustering, artificial neural network algorithms and data preprocessing. 
+http://uu.diva-portal.org/smash/get/diva2:667650/FULLTEXT01.pdf

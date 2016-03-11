@@ -20,7 +20,6 @@ HEIGHT = 400
 settings = {}
 #config file path
 FILE = '/etc/dpcs.conf'
-TEMPFILE = 'dpcs.conf'
 
 buttonlist = []
 
@@ -122,7 +121,7 @@ class SettingsPanel(Gtk.Window):
 		""" writes settings to dpcs.config, exits
 		if ok has been pressed
 		"""
-		f = open(TEMPFILE, 'w')
+		f = open(FILE, 'w')
 		for s in buttonlist:
 			save_setting(s)
 		json.dump(settings, f, indent=2)

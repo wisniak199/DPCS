@@ -51,7 +51,7 @@ class DPCSDaemon():
                 response = get(api_description_url)
             except RequestException as e:
                 self._handle_request_error(
-                    e, "DPCS coudln't get api description"
+                    e, "DPCS couldn't get api description"
                 )
                 continue
 

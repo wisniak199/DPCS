@@ -39,7 +39,7 @@ def generate_report(exit_code, stderr_output):
     template = {
         "crash_report": {
             "application": {
-                # TO DO - implementation depends on the way how the demon is
+                # TO DO - implementation depends on the way how the daemon is
                 # implemented
             },
             "system_info": {},
@@ -112,19 +112,19 @@ if __name__ == '__main__':
 
     p = subprocess.Popen(sys.argv[1],
                          stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE)
+                         stderr=subprocess.PIPE,
+                         shell=True)
     _, output = p.communicate()
     code = p.returncode
 
     if code != EXIT_OK:
-        # output to to, co wysyłamy
 
         api_description_url = SERVER_ADDRESS + "vd1/paths/"
         try:
             response = get(api_description_url)
         except RequestException as e:
             handle_request_error(
-                e, "DPCS coudln't get api description"
+                e, "DPCS couldn't get api description"
             )
             exit(2)
 
@@ -142,7 +142,7 @@ if __name__ == '__main__':
                             data=report)
         except RequestException as e:
             handle_request_error(
-                e, "DPCS coudln't post crash information"
+                e, "DPCS couldn't post crash information"
             )
             exit(3)
 
@@ -150,7 +150,7 @@ if __name__ == '__main__':
                                  'solution']['shell_script']
 
         home = path.expanduser("~")
-        scripts_directory = path.join(home, '.local/share/dpcs/')
+        scripts_directory = path.join(home, '.dpcs/')
 
         if not path.exists(scripts_directory):
             mkdir(scripts_directory)

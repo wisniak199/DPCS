@@ -1,4 +1,4 @@
-#coding: utf-8
+#!/usr/bin/env python3
 
 import json
 import gi
@@ -19,7 +19,7 @@ HEIGHT = 400
 # settings dictionary
 settings = {}
 #config file path
-FILE = '/etc/dpcs.conf'
+FILE = os.path.expanduser('~/.dpcs/.dpcsconfig')
 
 buttonlist = []
 
@@ -121,7 +121,9 @@ class SettingsPanel(Gtk.Window):
 		""" writes settings to dpcs.config, exits
 		if ok has been pressed
 		"""
+		os.makedirs(os.path.dirname(FILE), exist_ok=True)
 		f = open(FILE, 'w')
+
 		for s in buttonlist:
 			save_setting(s)
 		json.dump(settings, f, indent=2)
@@ -139,4 +141,6 @@ class SettingsPanel(Gtk.Window):
 				load_setting(b)
 
 			f.close()
-displaypanel()
+
+if __name__ == "__main__":
+	displaypanel()

@@ -104,6 +104,42 @@ def rand_fname(parent_path, prefix, suffix, length=4):
 
     return fname if not path.exists(fname) else rand_fname(suffix, length)
 
+
+def run_script(script):
+    """Run the solution script.
+
+    Arguments
+    ---------
+    script : string
+        The script's source code.
+    """
+    subprocess.Popen(script, shell=True)
+
+
+def save_script(script):
+    """Save the solution script under user's home directory.
+
+    Arguments
+    ---------
+    script : string
+        The script's source code.
+    """
+    home = path.expanduser("~")
+    scripts_directory = path.join(home, '.dpcs/')
+
+    if not path.exists(scripts_directory):
+        mkdir(scripts_directory)
+
+    filename = rand_fname(scripts_directory,
+                          'dpcs_solution_', '.sh')
+
+    with open(filename, 'w+') as f:
+
+        f.write(script)
+
+        print("The script produced by DPCS is available in " +
+              filename)
+
 if __name__ == '__main__':
 
     if len(sys.argv) != 2:
@@ -111,7 +147,6 @@ if __name__ == '__main__':
         exit(1)
 
     p = subprocess.Popen(sys.argv[1],
-                         stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE,
                          shell=True)
     _, output = p.communicate()
@@ -149,16 +184,13 @@ if __name__ == '__main__':
         script = response.json()['crash_report_ack'][
                                  'solution']['shell_script']
 
-        home = path.expanduser("~")
-        scripts_directory = path.join(home, '.dpcs/')
+        print("DPCS might have found a solution to your problem!")
+        print("How would you like to use it?")
+        resp = ''
+        while resp != 'q' and resp != 'r' and resp != 's':
+            resp = raw_input("(q) - ignore & quit, (r) - run, (s) - save\n")
 
-        if not path.exists(scripts_directory):
-            mkdir(scripts_directory)
-
-        filename = rand_fname(scripts_directory, 'dpcs_solution_', '.sh')
-
-        with open(filename, 'w+') as f:
-            f.write(script)
-
-            print("DPCS might have found a solution to your problem!")
-            print("The script produced by DPCS is available in " + filename)
+        if resp == 's':
+            save_script(script)
+        elif resp == 'r':
+            run_script(script)

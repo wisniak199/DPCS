@@ -1,0 +1,59 @@
+#### Displaying list with either: crash groups, crash reports or solutions ####
+localhost:8000/vd1/crash-groups/
+localhost:8000/vd1/crash-reports/
+localhost:8000/vd1/solutions/
+
+
+#### Displaying info about a specific: crash groups, crash reports or solutions ####
+localhost:8000/vd1/crash-groups/<id>
+localhost:8000/vd1/crash-reports/<id>
+localhost:8000/vd1/solutions/<id>
+
+
+### Create a new crash group ####
+curl -X POST http://localhost:8000/vd1/crash-groups/ -d "crash_group_id=1000"
+curl -X POST http://localhost:8000/vd1/crash-groups/ -d "crash_group_id=1001"
+
+
+#### display the created crash groups ####
+curl -X GET http://localhost:8000/vd1/crash-groups/
+
+
+### Create a new crash report using POST method. Take into account that we can't
+    create a new crash report with an already taken ID ####
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d ' {"crash_report_id":10001, "crash_group_id":1000, "stderr_output":"Cos sie posulo", "exit_code":-1, "systeminfo":{"name":"Ubuntu","version":"10.10"}, "application":{"name":"Chrome", "version":"10.10"}}' http://localhost:8000/vd1/crash-reports/
+
+
+
+#### Change crash report's information using PUT method - a few examples ####
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X PUT -d '{"exit_code":25, "stderr_output":"Znowu sie cos popsulo. Echhhhh"}' http://localhost:8000/vd1/crash-reports/10001/
+
+curl -X PUT -d "stderr_output=Znowu sie cos popsulo. Echhhhh&exit_code=34" http://localhost:8000/vd1/crash-reports/10001/
+
+curl -X PUT -d "exit_code=34&stderr_output=Nie dziala" http://localhost:8000/vd1/crash-reports/10001/
+
+
+
+#### Create a new solution that is good for solving a problem with the given crash group id ####
+curl -X POST -d "solution_id=1&crash_group_id=1000&shell_script=Better call Saul" http://localhost:8000/vd1/solutions/
+
+### Now if we try to add a solution with the same id 
+curl -X POST -d "solution_id=1&crash_group_id=1000&shell_script=Better call Saul" http://localhost:8000/vd1/solutions/
+#### we get an error:
+#### "Could not add the solution ...Make sure you passed correct arguments ..."
+
+
+
+#### Get info about a solution with given id ####
+curl -X GET http://localhost:8000/vd1/solutions/1/
+
+
+
+#### Assign a crash group to a given solution ####
+curl -X PUT -d "crash_group_id=1000" http://localhost:8000/vd1/solutions/1/
+
+
+
+#### Delete a solution with a certain ID ####
+curl -X DELETE http://localhost:8000/vd1/solutions/1/
+

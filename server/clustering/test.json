@@ -1,0 +1,25 @@
+[{
+  "crash_report": {
+    "crash_report_id": 3,
+    "stderr_output": "Traceback (most recent call last):\r\nFile \test_Evaluation_Metrics.py\" line 1, in <module>\r\nfrom recsys.evaluation.prediction import MAE\r\nImportError: No module named 'recsys"  
+  }
+},
+{
+  "crash_report": {
+    "crash_report_id": 4,
+    "stderr_output": "Traceback (most recent call last):\r\nFile \test_Evaluation_Metrics.py\" line 1, in <module>\r\nfrom recsys.evaluation.predict import MAE\r\nImportError: No module named 'recsys"  
+  }
+},
+{
+  "crash_report": {
+    "crash_report_id": 1,
+    "stderr_output": "Partial import of sklearn during the build process.\r\nGenerating cython files\r\nCythonizing sources\r\nsklearn\r\nProcessing sklearn\/_isotonic.pyx\r\nTraceback (most recent call last):\r\n  File \"<string>\", line 1, in <module>\r\nImportError: No module named Cython.Compiler.Main\r\nTraceback (most recent call last):\r\n  File \"\/root\/scikit-learn\/build_tools\/cythonize.py\", line 198, in <module>\r\n    main(root_dir_arg)\r\n  File \"\/root\/scikit-learn\/build_tools\/cythonize.py\", line 190, in main\r\n    check_and_cythonize(root_dir)\r\n  File \"\/root\/scikit-learn\/build_tools\/cythonize.py\", line 182, in check_and_cythonize\r\n    cythonize_if_unchanged(cur_dir, cython_file, gen_file, hashes)\r\n  File \"\/root\/scikit-learn\/build_tools\/cythonize.py\", line 156, in cythonize_if_unchanged\r\n    cythonize(full_cython_path, full_gen_file_path)\r\n  File \"\/root\/scikit-learn\/build_tools\/cythonize.py\", line 85, in cythonize\r\n    raise Exception(Cythonizing %s failed % cython_file)\r\nException: Cythonizing sklearn\/_isotonic.pyx failed\r\nTraceback (most recent call last):\r\n  File \"setup.py\", line 297, in <module>\r\n    setup_package()\r\n  File \"setup.py\", line 280, in setup_package\r\n    generate_cython()\r\n  File \"setup.py\", line 185, in generate_cython\r\n    raise RuntimeError(\"Running cythonize failed!\")\r\nRuntimeError: Running cythonize failed!\r\nroot@debian:~\/scikit-learn# apt install python-cythonize\r\nCzytanie list pakietw... Gotowe\r\nBudowanie drzewa zalenoci       \r\nOdczyt informacji o stanie... Gotowe\r\nE: Nie uda si odnale pakietu python-cythonize"
+  }
+},
+{
+  "crash_report": {
+    "crash_report_id": 2,
+    "stderr_output": "Partial import of sklearn during the build process.\r\nGenerating cython files\r\nCythonizing sources\r\nsklearn\r\nProcessing sklearn\/_isotonic.pyx\r\nTraceback (most recent call last):\r\n  File \"<string>\", line 1, in <module>\r\nImportError: No module named Cython.Compiler.Main\r\nTraceback (most recent call last):\r\n  File \"\/root\/scikit-learn\/build_tools\/cythonize.py\", line 198, in <module>\r\n    main(root_dir_arg)\r\n  File \"\/root\/scikit-learn\/build_tools\/cythonize.py\", line 190, in main\r\n    check_and_cythonize(root_dir)\r\n  File \"\/root\/scikit-learn\/build_tools\/cythonize.py\", line 182, in check_and_cythonize\r\n    cythonize_if_unchanged(cur_dir, cython_file, gen_file, hashes)\r\n  File \"\/root\/scikit-learn\/build_tools\/cythonize.py\", line 156, in cythonize_if_unchanged\r\n    cythonize(full_cython_path, full_gen_file_path)\r\n  File \"\/root\/scikit-learn\/build_tools\/cythonize.py\", line 85, in cythonize\r\n    raise Exception(Cythonizing %s failed % cython_file)\r\nException: Cythonizing sklearn\/_isotonic.pyx failed\r\nTraceback (most recent call last):\r\n  File \"setup.py\", line 297, in <module>\r\n    setup_package()\r\n  File \"setup.py\", line 280, in setup_package\r\n    generate_cython()\r\n  File \"setup.py\", line 185, in generate_cython\r\n    raise RuntimeError(\"Running cythonize failed!\")\r\nRuntimeError: Running cythonize failed!\r\nroot@debian:~\/scikit-learn# apt install python-cythonize\r\nCzytanie list pakietw... Gotowe\r\nBudowanie drzewa zalenoci       \r\nOdczyt informacji o stanie... Gotowe\r\nE: Can't find the python-cythonize package"
+  }
+}]
+

@@ -152,6 +152,8 @@ if __name__ == '__main__':
     _, output = p.communicate()
     code = p.returncode
 
+    print(output)
+
     if code != EXIT_OK:
 
         api_description_url = SERVER_ADDRESS + "vd1/paths/"
@@ -187,10 +189,13 @@ if __name__ == '__main__':
         print("DPCS might have found a solution to your problem!")
         print("How would you like to use it?")
         resp = ''
-        while resp != 'q' and resp != 'r' and resp != 's':
-            resp = raw_input("(q) - ignore & quit, (r) - run, (s) - save\n")
+        while resp != 'q' and resp != 'r' and resp != 's' and resp != 'p':
+            resp = raw_input("(q) - ignore & quit, (r) - run, " +
+                             "(s) - save, (p) - print\n")
 
         if resp == 's':
             save_script(script)
         elif resp == 'r':
             run_script(script)
+        elif resp == 'p':
+            print(script)

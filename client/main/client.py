@@ -13,7 +13,7 @@ from requests import get
 from requests import post
 from requests import RequestException
 
-from ...systemcheck.systemcheck import systemcheck
+from systemcheck import systemcheck
 
 EXIT_OK = 0
 

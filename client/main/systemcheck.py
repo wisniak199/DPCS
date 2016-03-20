@@ -17,7 +17,8 @@ def systemcheck():
     # get installed packages from dpkg
     packages_raw_info = \
         os.popen(
-            "dpkg-query -W -f='${binary:Package}\t${Version}\t${Status}\n' | grep \"install ok installed\""
+            "dpkg-query -W -f='${binary:Package}\t${Version}\t${Status}\n'" +
+            " | grep \"install ok installed\""
         ).read()
     packages_raw_info = packages_raw_info.split("\n")
 

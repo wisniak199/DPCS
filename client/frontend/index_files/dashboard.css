@@ -37,7 +37,7 @@ body {
 
 /* Hide for mobile, show later */
 
-.sidebar {
+.scroll-panel {
     position: fixed;
     top: 120px;
     bottom: 0;

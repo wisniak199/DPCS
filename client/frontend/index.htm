@@ -82,7 +82,7 @@
             <h3 class="col-md-3 col-md-offset-2">Crash groups</h3>
         </div>
         <div class="row">
-            <div class="col-sm-5 col-md-5 sidebar">
+            <div class="col-sm-5 col-md-5 scroll-panel">
                 <div class="row">
                     <div class="col-sm-12 col-md-12">
                         <div class="row panel">
@@ -207,7 +207,7 @@
             </div>
         </div>
 
-        <div class="col-sm-7 col-sm-offset-5 col-md-7 col-md-offset-5 sidebar">
+        <div class="col-sm-7 col-sm-offset-5 col-md-7 col-md-offset-5 scroll-panel">
             <div class="table-responsive">
                 <table class="table table-striped">
                     <thead>
@@ -343,6 +343,7 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="index_files/jquery.js"></script>
+    <script src="index_files/linq.min.js"></script>
     <script>
         window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')
     </script>
@@ -352,6 +353,120 @@
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="index_files/ie10-viewport-bug-workaround.js"></script>
 
+    <script>
+        var crashReports = [
+            {
+                "crash_report": {
+                    "crash_report_id": 2098,
+                    "crash_report_url": "vd1/crash-reports/2098",
+                    "crash_group_id": 425,
+                    "crash_group_url": "vd1/crash-groups/425",
+                    "application": {
+                        "name": "Google Chrome",
+                        "version": "48.0.2564.116"
+                    },
+                    "system_info": {
+                        "version": "14.04.1 LTS"
+                    },
+                    "exit_code": 1,
+                    "stderr_output": "error: stack overflow"
+                }
+  },
+            {
+                "crash_report": {
+                    "crash_report_id": 2091,
+                    "crash_report_url": "vd1/crash-reports/2098",
+                    "crash_group_id": 425,
+                    "crash_group_url": "vd1/crash-groups/425",
+                    "application": {
+                        "name": "Chromium",
+                        "version": "48.0.2564.000"
+                    },
+                    "system_info": {
+                        "version": "14.04.1 LTS"
+                    },
+                    "exit_code": 1,
+                    "stderr_output": " fatal  error:  stack  overflow"
+                }
+  },
+            {
+                "crash_report": {
+                    "crash_report_id": 2095,
+                    "crash_report_url": "vd1/crash-reports/2098",
+                    "crash_group_id": 425,
+                    "crash_group_url": "vd1/crash-groups/425",
+                    "application": {
+                        "name": "Chromium",
+                        "version": "48.0.2564.000"
+                    },
+                    "system_info": {
+                        "version": "14.04.1 LTS"
+                    },
+                    "exit_code": 1,
+                    "stderr_output": " fatal  error:  stack  overflow"
+                }
+  },
+            {
+                "crash_report": {
+                    "crash_report_id": 298,
+                    "crash_report_url": "vd1/crash-reports/2098",
+                    "crash_group_id": 700,
+                    "crash_group_url": "vd1/crash-groups/425",
+                    "application": {
+                        "name": "Chromium",
+                        "version": "48.0.2564.000"
+                    },
+                    "system_info": {
+                        "version": "14.04.1 LTS"
+                    },
+                    "exit_code": 1,
+                    "stderr_output": " fatal  error:  stack  overflow"
+                }
+  },
+            {
+                "crash_report": {
+                    "crash_report_id": 28,
+                    "crash_report_url": "vd1/crash-reports/2098",
+                    "crash_group_id": 700,
+                    "crash_group_url": "vd1/crash-groups/425",
+                    "application": {
+                        "name": "Chromium",
+                        "version": "48.0.2564.000"
+                    },
+                    "system_info": {
+                        "version": "14.04.1 LTS"
+                    },
+                    "exit_code": 1,
+                    "stderr_output": " fatal  error:  stack  overflow"
+                }
+  }
+];
+
+        // Class to represent a row in the seat reservations grid
+        function CrashGroup(id, name, hasSolution, url) {
+            var self = this;
+            self.name = name;
+            self.id = id;
+            self.hasSolution = hasSolution;
+            self.url = url;
+        }
+
+        // Overall viewmodel for this screen, along with initial state
+        function CrashGroupsViewModel() {
+            var self = this;
+
+            // Non-editable catalog data - would come from the server
+            self.crashGroups = 
+
+                // Editable data
+                self.seats = ko.observableArray([
+        new SeatReservation("Steve", self.availableMeals[0]),
+        new SeatReservation("Bert", self.availableMeals[0])
+    ]);
+        }
+
+        ko.applyBindings(new ReservationsViewModel());
+    </script>
 
 </body>
 

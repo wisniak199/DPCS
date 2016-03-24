@@ -219,118 +219,13 @@
                             <th class="col-md-1">details</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody data-bind="foreach: crashGroupsData">
                         <tr>
-                            <td class="col-md-1">2039</td>
-                            <td class="col-md-7">solution name taken from join and first line...</td>
-                            <td class="col-md-1">12</td>
-                            <td class="col-md-1"><i class='fa fa-times text-danger'></i></td>
-                            <td class="col-md-1"><i class='fa fa-info-circle'></i></td>
-                        </tr>
-                        <tr>
-                            <td class="col-md-1">2039</td>
-                            <td class="col-md-7">solution name taken from join and first line...</td>
-                            <td class="col-md-1">12</td>
-                            <td class="col-md-1"><i class='fa fa-check text-success'></i></td>
-                            <td class="col-md-1"><i class='fa fa-chevron-down'></i></td>
-                        </tr>
-                        <tr>
-                            <td class="col-md-1">2039</td>
-                            <td class="col-md-7">solution name taken from join and first line...</td>
-                            <td class="col-md-1">12</td>
-                            <td class="col-md-1"><i class='fa fa-times'></i></td>
-                            <td class="col-md-1"><i class='fa fa-chevron-down'></i></td>
-                        </tr>
-                        <tr>
-                            <td class="col-md-1">2039</td>
-                            <td class="col-md-7">solution name taken from join and first line...</td>
-                            <td class="col-md-1">12</td>
-                            <td class="col-md-1"><i class='fa fa-times'></i></td>
-                            <td class="col-md-1"><i class='fa fa-chevron-down'></i></td>
-                        </tr>
-                        <tr>
-                            <td>2039</td>
-                            <td>solution name taken from join and first line...</td>
-                            <td>12</td>
-                            <td><i class='fa fa-times'></i></td>
-                            <td><i class='fa fa-chevron-down'></i></td>
-                        </tr>
-                        <tr>
-                            <td>2039</td>
-                            <td>solution name taken from join and first line...</td>
-                            <td>12</td>
-                            <td><i class='fa fa-times'></i></td>
-                            <td><i class='fa fa-chevron-down'></i></td>
-                        </tr>
-                        <tr>
-                            <td>2039</td>
-                            <td>solution name taken from join and first line...</td>
-                            <td>12</td>
-                            <td><i class='fa fa-times'></i></td>
-                            <td><i class='fa fa-chevron-down'></i></td>
-                        </tr>
-                        <tr>
-                            <td>2039</td>
-                            <td>solution name taken from join and first line...</td>
-                            <td>12</td>
-                            <td><i class='fa fa-times'></i></td>
-                            <td><i class='fa fa-chevron-down'></i></td>
-                        </tr>
-                        <tr>
-                            <td>2039</td>
-                            <td>solution name taken from join and first line...</td>
-                            <td>12</td>
-                            <td><i class='fa fa-times'></i></td>
-                            <td><i class='fa fa-chevron-down'></i></td>
-                        </tr>
-                        <tr>
-                            <td>2039</td>
-                            <td>solution name taken from join and first line...</td>
-                            <td>12</td>
-                            <td><i class='fa fa-times'></i></td>
-                            <td><i class='fa fa-chevron-down'></i></td>
-                        </tr>
-                        <tr>
-                            <td>2039</td>
-                            <td>solution name taken from join and first line...</td>
-                            <td>12</td>
-                            <td><i class='fa fa-times'></i></td>
-                            <td><i class='fa fa-chevron-down'></i></td>
-                        </tr>
-                        <tr>
-                            <td>2039</td>
-                            <td>solution name taken from join and first line...</td>
-                            <td>12</td>
-                            <td><i class='fa fa-times'></i></td>
-                            <td><i class='fa fa-chevron-down'></i></td>
-                        </tr>
-                        <tr>
-                            <td>2039</td>
-                            <td>solution name taken from join and first line...</td>
-                            <td>12</td>
-                            <td><i class='fa fa-times'></i></td>
-                            <td><i class='fa fa-chevron-down'></i></td>
-                        </tr>
-                        <tr>
-                            <td>2039</td>
-                            <td>solution name taken from join and first line...</td>
-                            <td>12</td>
-                            <td><i class='fa fa-times'></i></td>
-                            <td><i class='fa fa-chevron-down'></i></td>
-                        </tr>
-                        <tr>
-                            <td>2039</td>
-                            <td>solution name taken from join and first line...</td>
-                            <td>12</td>
-                            <td><i class='fa fa-times'></i></td>
-                            <td><i class='fa fa-chevron-down'></i></td>
-                        </tr>
-                        <tr>
-                            <td>2039</td>
-                            <td>solution name taken from join and first line...</td>
-                            <td>12</td>
-                            <td><i class='fa fa-times'></i></td>
-                            <td><i class='fa fa-chevron-down'></i></td>
+                            <td data-bind="text: group"></td>
+                            <td>name?</td>
+                            <td data-bind="text: count"></td>
+                            <td>?</td>
+                            <td>klik</td>
                         </tr>
                     </tbody>
                 </table>
@@ -353,8 +248,10 @@
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="index_files/ie10-viewport-bug-workaround.js"></script>
 
+    <script src="https://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
+
     <script>
-        var crashReports = [
+        var CrashReports = [
             {
                 "crash_report": {
                     "crash_report_id": 2098,
@@ -456,16 +353,31 @@
             var self = this;
 
             // Non-editable catalog data - would come from the server
-            self.crashGroups = 
+            self.crashGroupsData = Enumerable.From(CrashReports)
+                .GroupBy(
+                    function (crash) {
+                        return crash["crash_report"]["crash_group_id"];
+                    }, 
+                    function (crash) {
+                        return {
+                            id: crash["crash_report"]["crash_report_id"],
+                            url: crash["crash_report"]["crash_report_url"],
+                        };
+                    }, 
+                    function (group, grouping) { 
+                        return {
+                            group: group,
+                            crashes: grouping.source,
+                            count: grouping.source.length
+                        };
+                    })
+                .ToArray();
 
-                // Editable data
-                self.seats = ko.observableArray([
-        new SeatReservation("Steve", self.availableMeals[0]),
-        new SeatReservation("Bert", self.availableMeals[0])
-    ]);
+            // Editable data
+            self.crashGroupsData = ko.observableArray(self.crashGroupsData);
         }
 
-        ko.applyBindings(new ReservationsViewModel());
+        ko.applyBindings(new CrashGroupsViewModel());
     </script>
 
 </body>

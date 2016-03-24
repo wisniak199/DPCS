@@ -249,95 +249,11 @@
     <script src="index_files/ie10-viewport-bug-workaround.js"></script>
 
     <script src="https://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
+    
+    <script src="index_files/mockup_data.js"></script>
 
     <script>
-        var CrashReports = [
-            {
-                "crash_report": {
-                    "crash_report_id": 2098,
-                    "crash_report_url": "vd1/crash-reports/2098",
-                    "crash_group_id": 425,
-                    "crash_group_url": "vd1/crash-groups/425",
-                    "application": {
-                        "name": "Google Chrome",
-                        "version": "48.0.2564.116"
-                    },
-                    "system_info": {
-                        "version": "14.04.1 LTS"
-                    },
-                    "exit_code": 1,
-                    "stderr_output": "error: stack overflow"
-                }
-  },
-            {
-                "crash_report": {
-                    "crash_report_id": 2091,
-                    "crash_report_url": "vd1/crash-reports/2098",
-                    "crash_group_id": 425,
-                    "crash_group_url": "vd1/crash-groups/425",
-                    "application": {
-                        "name": "Chromium",
-                        "version": "48.0.2564.000"
-                    },
-                    "system_info": {
-                        "version": "14.04.1 LTS"
-                    },
-                    "exit_code": 1,
-                    "stderr_output": " fatal  error:  stack  overflow"
-                }
-  },
-            {
-                "crash_report": {
-                    "crash_report_id": 2095,
-                    "crash_report_url": "vd1/crash-reports/2098",
-                    "crash_group_id": 425,
-                    "crash_group_url": "vd1/crash-groups/425",
-                    "application": {
-                        "name": "Chromium",
-                        "version": "48.0.2564.000"
-                    },
-                    "system_info": {
-                        "version": "14.04.1 LTS"
-                    },
-                    "exit_code": 1,
-                    "stderr_output": " fatal  error:  stack  overflow"
-                }
-  },
-            {
-                "crash_report": {
-                    "crash_report_id": 298,
-                    "crash_report_url": "vd1/crash-reports/2098",
-                    "crash_group_id": 700,
-                    "crash_group_url": "vd1/crash-groups/425",
-                    "application": {
-                        "name": "Chromium",
-                        "version": "48.0.2564.000"
-                    },
-                    "system_info": {
-                        "version": "14.04.1 LTS"
-                    },
-                    "exit_code": 1,
-                    "stderr_output": " fatal  error:  stack  overflow"
-                }
-  },
-            {
-                "crash_report": {
-                    "crash_report_id": 28,
-                    "crash_report_url": "vd1/crash-reports/2098",
-                    "crash_group_id": 700,
-                    "crash_group_url": "vd1/crash-groups/425",
-                    "application": {
-                        "name": "Chromium",
-                        "version": "48.0.2564.000"
-                    },
-                    "system_info": {
-                        "version": "14.04.1 LTS"
-                    },
-                    "exit_code": 1,
-                    "stderr_output": " fatal  error:  stack  overflow"
-                }
-  }
-];
+       
 
         // Class to represent a row in the seat reservations grid
         function CrashGroup(id, name, hasSolution, url) {
@@ -353,7 +269,7 @@
             var self = this;
 
             // Non-editable catalog data - would come from the server
-            self.crashGroupsData = Enumerable.From(CrashReports)
+            self.crashGroupsData = Enumerable.From(Repository.CrashReports)
                 .GroupBy(
                     function (crash) {
                         return crash["crash_report"]["crash_group_id"];

@@ -32,6 +32,7 @@ setup(classifiers=[
         'Topic :: System :: Software Distribution',
         'Topic :: Utilities'
       ],
+      scripts=['main/dpcs', 'settings/dpcs-settingspanel/dpcs-settings'],
       cmdclass={'test': PyTest},
       description='The client for the Data Powered Crash Solver',
       install_requires=['gi', 'requests'],

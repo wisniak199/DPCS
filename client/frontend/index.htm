@@ -84,118 +84,36 @@
         <div class="row">
             <div class="col-sm-5 col-md-5 scroll-panel">
                 <div class="row">
-                    <div class="col-sm-12 col-md-12">
-                        <div class="row panel">
+                    <div class="col-sm-12 col-md-12" data-bind="foreach: crashReportsData">
+                        <div class="row panel" >
                             <div class="panel-body">
                                 <div class='col-md-3'>
-                                    <div class="row">
-                                        Crash id: <strong>2039</strong>
+                                    <div class="row" >
+                                        Crash id: <strong data-bind="text: id"></strong>
                                     </div>
 
                                     <div class='row'>
                                         exit code:
-                                        <strong>1</strong>
+                                        <strong data-bind="text: exit_code"></strong>
                                     </div>
                                 </div>
                                 <div class='col-md-5'>
                                     <div class="row">
-                                        app: <strong>Google Chrome</strong>
+                                        app: <strong data-bind="text: appName"></strong>
                                     </div>
                                     <div class="row">
-                                        system:<strong> Ubuntu LTE 14.04</strong>
+                                        system:<strong data-bind="text: system"></strong>
                                     </div>
                                 </div>
-                                <div class='col-md-12 well'>
-                                    stack overflow and massive fukcup
+                                <div class='col-md-12 well' data-bind="text: output">
+                                    
                                 </div>
                                 <div class='col-md-12'>
                                     <div class="row">
                                         <div class="form-inline">
                                             <label class="control-label">Assign to</label>
-                                            <select class="form-control">
-                                                <option>none</option>
-                                                <option>CG 3012</option>
-                                                <option>CG 1013</option>
-                                                <option>CG 224</option>
-                                                <option>CG 1015</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row panel">
-                            <div class="panel-body">
-                                <div class='col-md-3'>
-                                    <div class="row">
-                                        Crash id: <strong>2039</strong>
-                                    </div>
-
-                                    <div class='row'>
-                                        exit code:
-                                        <strong>1</strong>
-                                    </div>
-                                </div>
-                                <div class='col-md-5'>
-                                    <div class="row">
-                                        app: <strong>Google Chrome</strong>
-                                    </div>
-                                    <div class="row">
-                                        system:<strong> Ubuntu LTE 14.04</strong>
-                                    </div>
-                                </div>
-                                <div class='col-md-12 well'>
-                                    stack overflow and massive fukcup
-                                </div>
-                                <div class='col-md-12'>
-                                    <div class="row">
-                                        <div class="form-inline">
-                                            <label class="control-label">Assign to</label>
-                                            <select class="form-control">
-                                                <option>none</option>
-                                                <option>CG 3012</option>
-                                                <option>CG 1013</option>
-                                                <option>CG 224</option>
-                                                <option>CG 1015</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row panel">
-                            <div class="panel-body">
-                                <div class='col-md-3'>
-                                    <div class="row">
-                                        Crash id: <strong>2039</strong>
-                                    </div>
-
-                                    <div class='row'>
-                                        exit code:
-                                        <strong>1</strong>
-                                    </div>
-                                </div>
-                                <div class='col-md-5'>
-                                    <div class="row">
-                                        app: <strong>Google Chrome</strong>
-                                    </div>
-                                    <div class="row">
-                                        system:<strong> Ubuntu LTE 14.04</strong>
-                                    </div>
-                                </div>
-                                <div class='col-md-12 well'>
-                                    stack overflow and massive fukcup
-                                </div>
-                                <div class='col-md-12'>
-                                    <div class="row">
-                                        <div class="form-inline">
-                                            <label class="control-label">Assign to</label>
-                                            <select class="form-control">
-                                                <option>none</option>
-                                                <option>CG 3012</option>
-                                                <option>CG 1013</option>
-                                                <option>CG 224</option>
-                                                <option>CG 1015</option>
+                                            <select class="form-control" data-bind="foreach: $root.crashGroupsData">
+                                                CG <option data-bind="text: id"></option>
                                             </select>
                                         </div>
                                     </div>
@@ -221,10 +139,10 @@
                     </thead>
                     <tbody data-bind="foreach: crashGroupsData">
                         <tr>
-                            <td data-bind="text: group"></td>
+                            <td data-bind="text: id"></td>
                             <td>name?</td>
                             <td data-bind="text: count"></td>
-                            <td>?</td>
+                            <td data-bind="text: hasSolution">?</td>
                             <td>klik</td>
                         </tr>
                     </tbody>
@@ -250,50 +168,12 @@
 
     <script src="https://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
     
-    <script src="index_files/mockup_data.js"></script>
+    <script src="core/mockup_data.js"></script>
+    <script src="core/models.js"></script>
+    <script src="core/view_models.js"></script>
 
     <script>
-       
-
-        // Class to represent a row in the seat reservations grid
-        function CrashGroup(id, name, hasSolution, url) {
-            var self = this;
-            self.name = name;
-            self.id = id;
-            self.hasSolution = hasSolution;
-            self.url = url;
-        }
-
-        // Overall viewmodel for this screen, along with initial state
-        function CrashGroupsViewModel() {
-            var self = this;
-
-            // Non-editable catalog data - would come from the server
-            self.crashGroupsData = Enumerable.From(Repository.CrashReports)
-                .GroupBy(
-                    function (crash) {
-                        return crash["crash_report"]["crash_group_id"];
-                    }, 
-                    function (crash) {
-                        return {
-                            id: crash["crash_report"]["crash_report_id"],
-                            url: crash["crash_report"]["crash_report_url"],
-                        };
-                    }, 
-                    function (group, grouping) { 
-                        return {
-                            group: group,
-                            crashes: grouping.source,
-                            count: grouping.source.length
-                        };
-                    })
-                .ToArray();
-
-            // Editable data
-            self.crashGroupsData = ko.observableArray(self.crashGroupsData);
-        }
-
-        ko.applyBindings(new CrashGroupsViewModel());
+        ko.applyBindings(new MainViewModel());
     </script>
 
 </body>

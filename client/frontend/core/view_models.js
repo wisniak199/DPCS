@@ -1,0 +1,64 @@
+function getCrashGroups() {
+    var crashGroups = Repository.CrashGroups;
+    var crashReports = Enumerable.From(Repository.CrashReports);
+    var solutions = Enumerable.From(Repository.Solutions);
+
+    for (var i = 0; i < crashGroups.length; i++) {
+        var cg = crashGroups[i];
+        
+        cg.crashReports = crashReports
+            .Where(
+                function (crash) {
+                    return crash.crash_report.crash_group_id === cg.crash_group_id;
+                })
+            .ToArray();
+        
+        cg.hasSolution = solutions
+            .Any(
+                function (solution) {
+                    return solution["solution"]["crash_group_id"] === cg["crash_group_id"];
+                });
+    }
+
+    return Enumerable.From(crashGroups)
+        .Select(
+            function (cg) {
+                return {
+                    id: cg["crash_group_id"],
+                    count: cg.crashReports.length,
+                    hasSolution: cg.hasSolution
+                }
+            })
+        .ToArray();
+}
+
+function getUnassignedReports() {
+    var crashReports = Enumerable.From(Repository.CrashReports)
+        .Where(
+            function (crash) {
+                return !crash["crash_report"]["crash_group_id"];
+            }
+        )
+        .Select(
+            function (crash) {
+                return {
+                    id: crash["crash_report"]["crash_report_id"],
+                    appName: crash["crash_report"]["application"]["name"],
+                    appVersion: crash["crash_report"]["application"]["version"],
+                    system: crash["crash_report"]["system_info"]["version"],
+                    exit_code: crash["crash_report"]["exit_code"],
+                    output: crash["crash_report"]["stderr_output"],
+                }
+            }
+        )
+        .ToArray();
+    return crashReports;
+}
+
+function MainViewModel() {
+    var self = this;
+
+    self.crashGroupsData = ko.observableArray(getCrashGroups());
+
+    self.crashReportsData = ko.observableArray(getUnassignedReports());
+}

@@ -6,7 +6,7 @@ var crashReports = [
         "crash_report": {
             "crash_report_id": 2098,
             "crash_report_url": "vd1/crash-reports/2098",
-            "crash_group_id": 425,
+            "crash_group_id": 123,
             "crash_group_url": "vd1/crash-groups/425",
             "application": {
                 "name": "Google Chrome",
@@ -15,7 +15,7 @@ var crashReports = [
             "system_info": {
                 "version": "14.04.1 LTS"
             },
-            "exit_code": 1,
+            "exit_code": -1,
             "stderr_output": "error: stack overflow"
         }
   },
@@ -23,7 +23,7 @@ var crashReports = [
         "crash_report": {
             "crash_report_id": 2091,
             "crash_report_url": "vd1/crash-reports/2091",
-            "crash_group_id": 425,
+            "crash_group_id": 123,
             "crash_group_url": "vd1/crash-groups/425",
             "application": {
                 "name": "Chromium",
@@ -32,7 +32,7 @@ var crashReports = [
             "system_info": {
                 "version": "14.04.1 LTS"
             },
-            "exit_code": 1,
+            "exit_code": 2,
             "stderr_output": " fatal  error:  stack  overflow"
         }
   },
@@ -49,7 +49,7 @@ var crashReports = [
             "system_info": {
                 "version": "14.04.1 LTS"
             },
-            "exit_code": 1,
+            "exit_code": 0,
             "stderr_output": " fatal  error:  stack  overflow"
         }
   },
@@ -57,7 +57,7 @@ var crashReports = [
         "crash_report": {
             "crash_report_id": 298,
             "crash_report_url": "vd1/crash-reports/298",
-            "crash_group_id": 700,
+            "crash_group_id": 223,
             "crash_group_url": "vd1/crash-groups/700",
             "application": {
                 "name": "Chromium",
@@ -66,13 +66,13 @@ var crashReports = [
             "system_info": {
                 "version": "14.04.1 LTS"
             },
-            "exit_code": 1,
+            "exit_code": 404,
             "stderr_output": " fatal  error:  stack  overflow"
         }
   },
     {
         "crash_report": {
-            "crash_report_id": 28,
+            "crash_report_id": 283,
             "crash_report_url": "vd1/crash-reports/28",
             "crash_group_id": 700,
             "crash_group_url": "vd1/crash-groups/700",
@@ -83,7 +83,37 @@ var crashReports = [
             "system_info": {
                 "version": "14.04.1 LTS"
             },
-            "exit_code": 1,
+            "exit_code": -1,
+            "stderr_output": " fatal  error:  stack  overflow"
+        }
+  },
+    {
+        "crash_report": {
+            "crash_report_id": 298,
+            "crash_report_url": "vd1/crash-reports/28",
+            "application": {
+                "name": "Chromium",
+                "version": "48.0.2564.000"
+            },
+            "system_info": {
+                "version": "14.04.1 LTS"
+            },
+            "exit_code": -0,
+            "stderr_output": " fatal  error:  stack  overflow"
+        }
+  },
+    {
+        "crash_report": {
+            "crash_report_id": 284,
+            "crash_report_url": "vd1/crash-reports/28",
+            "application": {
+                "name": "Chromium",
+                "version": "48.0.2564.000"
+            },
+            "system_info": {
+                "version": "14.04.1 LTS"
+            },
+            "exit_code": 44,
             "stderr_output": " fatal  error:  stack  overflow"
         }
   }
@@ -104,7 +134,7 @@ var crashGroups = [
         "crash_group_url": "vd1/crash-groups/998"
 }
 , {
-        "crash_group_id": 998,
+        "crash_group_id": 9699,
         "crash_group_url": "vd1/crash-groups/998"
 }];
 

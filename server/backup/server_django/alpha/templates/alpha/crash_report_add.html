@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+{{ msg }}
+<br/>
+{% if reports.count > 0 %}
+    <table id = "table_reports">
+    {% for report in reports %}
+        <tr>
+            <td>{{ report.crash_report_id }}</td>
+            <td>{{ report.crash_group_id }}</td>
+            <td>{{ report.stderr_output }}</td>
+            <td>{{ report.exit_code }}</td>
+            <td>{{ report.application }}</td>
+            <td>{{ report.systeminfo }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endif %}
+
+<h2>Add new crash report</h2>
+<form action="" method="post">
+    {% csrf_token %}
+    <input type="text" name="crash_report_id" placeholder="crash_report_id"><br/>
+    <input type="text" name="crash_group_id" placeholder="crash_group_id"><br/>
+    <input type="text" name="stderr_output" placeholder="stderr_output"><br/>
+    <input type="text" name="exit_code" placeholder="exit_code"><br/>
+    <input type="text" name="application_name" placeholder="application_name"><br/>
+    <input type="text" name="application_version" placeholder="application_version"><br/>
+    <input type="text" name="system_version" placeholder="system_version"><br/>
+    <button type="submit">Add!</button>
+</form>
+
+
+</body>
+</html>

@@ -61,4 +61,25 @@ function MainViewModel() {
     self.crashGroupsData = ko.observableArray(getCrashGroups());
 
     self.crashReportsData = ko.observableArray(getUnassignedReports());
+
+    self.selectedCrashGroup = ko.observable();
+
+    self.assignReport = function(report){
+        var crashGroups = Enumerable.From(Repository.CrashGroups);
+        self.selectedId = self.selectedCrashGroup();
+        self.crashGroupUrl = crashGroups.First(function (crashGroup) { return crashGroup.crash_group_id == self.selectedId })["crash_group_url"];
+        var crashGroupData = {
+            "crash_group_id": self.selectedId,
+            "crash_group_url": self.crashGroupUrl
+        };
+        $.ajax({
+                url: "http://private-anon-71b931be7-dpcs.apiary-mock.com/vd1/crash-reports/"+report.id,
+                type: "PUT",
+                data: {"crash_report": crashGroupData}
+            })
+            .done(function (response) {
+                console.log("resp", response)
+            });
+
+    }
 }

@@ -112,9 +112,10 @@
                                     <div class="row">
                                         <div class="form-inline">
                                             <label class="control-label">Assign to</label>
-                                            <select class="form-control" data-bind="foreach: $root.crashGroupsData">
+                                            <select class="form-control" data-bind="foreach: $root.crashGroupsData, value: $root.selectedCrashGroup">
                                                 CG <option data-bind="text: id"></option>
                                             </select>
+                                            <button type="button" class="btn btn-default" data-bind="click:$root.assignReport.bind($index())"> Confirm </button>
                                         </div>
                                     </div>
                                 </div>

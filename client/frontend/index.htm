@@ -52,9 +52,10 @@
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a href="#">
-                            <i class="fa fa-plus"></i> add report
-                        </a>
+                        <a class="bg-info" href="#" data-bind="click:SendCrashGroup"><i class="fa fa-lg fa-cart-plus"></i> add crash group</a>
+                    </li>
+                    <li>
+                        <a class="bg-success" href="#" data-bind="click:AddCrash"><i class="fa fa fa-plus"></i> add report</a>
                     </li>
                     <li>
                         <a href="#">
@@ -85,10 +86,10 @@
             <div class="col-sm-5 col-md-5 scroll-panel">
                 <div class="row">
                     <div class="col-sm-12 col-md-12" data-bind="foreach: crashReportsData">
-                        <div class="row panel" >
+                        <div class="row panel">
                             <div class="panel-body">
                                 <div class='col-md-3'>
-                                    <div class="row" >
+                                    <div class="row">
                                         Crash id: <strong data-bind="text: id"></strong>
                                     </div>
 
@@ -106,14 +107,15 @@
                                     </div>
                                 </div>
                                 <div class='col-md-12 well' data-bind="text: output">
-                                    
+
                                 </div>
                                 <div class='col-md-12'>
                                     <div class="row">
                                         <div class="form-inline">
                                             <label class="control-label">Assign to</label>
                                             <select class="form-control" data-bind="foreach: $root.crashGroupsData, value: $root.selectedCrashGroup">
-                                                CG <option data-bind="text: id"></option>
+                                                CG
+                                                <option data-bind="text: GroupId"></option>
                                             </select>
                                             <button type="button" class="btn btn-default" data-bind="click:$root.assignReport.bind($index())"> Confirm </button>
                                         </div>
@@ -140,11 +142,13 @@
                     </thead>
                     <tbody data-bind="foreach: crashGroupsData">
                         <tr>
-                            <td data-bind="text: id"></td>
+                            <td data-bind="text: GroupId"></td>
                             <td>name?</td>
                             <td data-bind="text: count"></td>
                             <td data-bind="text: hasSolution">?</td>
-                            <td>klik</td>
+                            <td>
+                                <a href="#" data-bind="click:$root.ViewCrashGroup"><i class="fa fa-lg fa-search-plus"></i></a>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -152,6 +156,157 @@
         </div>
     </div>
     </div>
+
+    <!--    PARTIALS    -->
+    <!-- Create modal -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="add-crash-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">crash group details</h4>
+                </div>
+                <div class="modal-body" data-bind="template:{name:'crash-edit-template',data:CrashToAdd}">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">close</button>
+                    <button type="button" class="btn btn-primary" data-bind="click:SendCrash">send crash</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+    
+    <script type="text/html" id="crash-edit-template">
+        <div class="row">
+            <h4>edit crash</h4>
+            <div class="col-sm-12 col-md-12 main">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>application</h4>
+                        <div class="row" data-bind="with:Application">
+                            <div class="form-group col-md-6">
+                                <label for="app-name">name *</label>
+                                <input class="form-control" id="app-name" placeholder="app name" data-bind="value:Name">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="app-version">version *</label>
+                                <input class="form-control" id="app-version" placeholder="app version" data-bind="value:Version">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <h4>system</h4>
+                        <div class="row" data-bind="with:SystemInfo">
+                            <div class="form-group col-md-12">
+                                <label for="system-version">version *</label>
+                                <input class="form-control" id="system-version" placeholder="version of the system" data-bind="value:Version">
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-12">
+                        <h4>exit_code</h4>
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <input class="form-control" id="exit-code" placeholder="application exit code" data-bind="value:ExitCode">
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-12">
+                        <h4>stderr_output </h4>
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <textarea rows="5" class="form-control" id="stderr-output " placeholder="lines from the application's standard error stream" data-bind="value:StderrOutput"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <!-- crash group details modal -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="crash-group-details-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Report crash</h4>
+                </div>
+                <div class="modal-body" data-bind="template:{name:'crash-group-details-template',data:GroupToView}">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">close</button>
+                    <button type="button" class="btn btn-primary" data-bind="click:SendCrash">send crash</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+    <script type="text/html" id="crash-group-details-template">
+        <div class="row">
+            <div class="col-md-12">
+                id: <h4 data-bind="text:GroupId"></h4>
+            </div>
+            <div class="col-sm-12 col-md-12 main">
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- ko if: $data.hasOwnProperty("Solution") -->
+                            <div class="row" data-bind="with:Solution">
+                                <h4>solution id: <span data-bind="text: SolutionId"></span></h4>
+                                <div class="well" data-bind="text:ShellScript"></div>
+                            </div>
+                        <!-- /ko -->
+                        <!-- ko ifnot: $data.hasOwnProperty("Solution") -->
+                            <h4>no solution</h4>
+                        <!-- /ko -->
+                    </div>
+                    
+                </div>
+            </div>
+            <h4>crashes</h4>
+            <div class="col-sm-12 col-md-12" data-bind="foreach: Crashes">
+                        <div class="row panel">
+                            <div class="panel-body">
+                                <div class='col-md-3'>
+                                    <div class="row">
+                                        Crash id: <strong data-bind="text: id"></strong>
+                                    </div>
+
+                                    <div class='row'>
+                                        exit code:
+                                        <strong data-bind="text: exit_code"></strong>
+                                    </div>
+                                </div>
+                                <div class='col-md-5'>
+                                    <div class="row">
+                                        app: <strong data-bind="text: appName"></strong>
+                                    </div>
+                                    <div class="row">
+                                        system:<strong data-bind="text: system"></strong>
+                                    </div>
+                                </div>
+                                <div class='col-md-12 well' data-bind="text: output">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        </div>
+    </script>
+    
+    <!--    PARTIALS END   -->
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -168,7 +323,7 @@
     <script src="index_files/ie10-viewport-bug-workaround.js"></script>
 
     <script src="https://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
-    
+
     <script src="core/mockup_data.js"></script>
     <script src="core/models.js"></script>
     <script src="core/view_models.js"></script>

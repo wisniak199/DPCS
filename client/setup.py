@@ -32,10 +32,10 @@ setup(classifiers=[
         'Topic :: System :: Software Distribution',
         'Topic :: Utilities'
       ],
-      scripts=['main/dpcs'],
+      scripts=['main/dpcs', 'settings/dpcs-settings'],
       cmdclass={'test': PyTest},
       description='The client for the Data Powered Crash Solver',
-      install_requires=['gi', 'requests'],
+      install_requires=['requests', 'pgi', 'pyinstaller'],
       keywords=['dpcs', 'ai', 'fix', 'error solving', 'log analysis'],
       license='LGPLv3',
       long_description=open('../readme.md', 'r').read(),

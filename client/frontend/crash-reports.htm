@@ -307,14 +307,14 @@
         }
 
         //ctor
-        $.get("http://private-anon-71b931be7-dpcs.apiary-mock.com/vd1/crash-reports/", {}, function (data) {
-            var crashes = Enumerable.From(data)
-                    .Select(function (x) {
-                        return new CrashVM(x.crash_report)
-                    })
-                    .ToArray();
-            self.Crashes(crashes);
-        });
+            $.get("http://private-anon-71b931be7-dpcs.apiary-mock.com/vd1/crash-reports/", {}, function (data) {
+                var crashes = Enumerable.From(data)
+                        .Select(function (x) {
+                            return new CrashVM(x.crash_report)
+                        })
+                        .ToArray();
+                self.Crashes(crashes);
+            });
 
     }
 

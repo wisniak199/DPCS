@@ -137,7 +137,6 @@ var crashGroups = [
         "crash_group_id": 9699,
         "crash_group_url": "vd1/crash-groups/998"
 }];
-selectedCrashGroup = ko.observable();
 
 // /vd1/solutions/
 var solutions = [

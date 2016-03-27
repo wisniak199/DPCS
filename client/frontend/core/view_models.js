@@ -5,14 +5,14 @@ function getCrashGroups() {
 
     for (var i = 0; i < crashGroups.length; i++) {
         var cg = crashGroups[i];
-        
+
         cg.crashReports = crashReports
             .Where(
                 function (crash) {
                     return crash.crash_report.crash_group_id === cg.crash_group_id;
                 })
             .ToArray();
-        
+
         cg.hasSolution = solutions
             .Any(
                 function (solution) {
@@ -68,18 +68,24 @@ function MainViewModel() {
         var crashGroups = Enumerable.From(Repository.CrashGroups);
         self.selectedId = self.selectedCrashGroup();
         self.crashGroupUrl = crashGroups.First(function (crashGroup) { return crashGroup.crash_group_id == self.selectedId })["crash_group_url"];
-        var crashGroupData = {
-            "crash_group_id": self.selectedId,
-            "crash_group_url": self.crashGroupUrl
-        };
+
         $.ajax({
                 url: "http://private-anon-71b931be7-dpcs.apiary-mock.com/vd1/crash-reports/"+report.id,
-                type: "PUT",
-                data: {"crash_report": crashGroupData}
+                type: "GET",
             })
             .done(function (response) {
-                console.log("resp", response)
+                response["crash_report"]["crash_group_id"] = self.selectedId
+                response["crash_report"]["crash_group_url"] = self.crashGroupUrl
+                $.ajax({
+                        url: "http://private-anon-71b931be7-dpcs.apiary-mock.com/vd1/crash-reports/"+report.id,
+                        type: "PUT",
+                        data: {"crash_report": response}
+                    })
+                    .done(function (response, textStatus, jqXHR) {
+                        if(jqXHR.status==200) {
+                            self.crashReportsData.remove(report)
+                        }
+                    });
             });
-
     }
 }

@@ -31,14 +31,7 @@ function getUnassignedReports() {
         )
         .Select(
             function (crash) {
-                return {
-                    id: crash["crash_report"]["crash_report_id"],
-                    appName: crash["crash_report"]["application"]["name"],
-                    appVersion: crash["crash_report"]["application"]["version"],
-                    system: crash["crash_report"]["system_info"]["version"],
-                    exit_code: crash["crash_report"]["exit_code"],
-                    output: crash["crash_report"]["stderr_output"],
-                }
+                return new CrashVM(crash.crash_report);
             }
         )
         .ToArray();
@@ -177,7 +170,6 @@ function CrashGroupDetailsVM(data) {
     if (solution) {
         self.Solution = ko.observable(new SolutionVM(solution.solution));
         self.SolutionName = solution.solution.shell_script;
-        console.log(solution.solution.shell_script);
     }
 
     self.Crashes = Enumerable.From(Repository.CrashReports)
@@ -188,14 +180,7 @@ function CrashGroupDetailsVM(data) {
         )
         .Select(
             function (crash) {
-                return {
-                    id: crash["crash_report"]["crash_report_id"],
-                    appName: crash["crash_report"]["application"]["name"],
-                    appVersion: crash["crash_report"]["application"]["version"],
-                    system: crash["crash_report"]["system_info"]["version"],
-                    exit_code: crash["crash_report"]["exit_code"],
-                    output: crash["crash_report"]["stderr_output"],
-                }
+                return new CrashVM(crash.crash_report);
             }
         )
         .ToArray();
@@ -213,7 +198,7 @@ function SolutionVM(data) {
 
 function CrashVM(data) {
     var self = this;
-
+    
     self.ReportId = ko.observable(data.crash_report_id || "");
     self.ReportUrl = ko.observable(data.crash_report_url || "");
     self.Group = ko.observable();
@@ -290,10 +275,7 @@ function CrashesVM() {
                 }
             })
             .done(function (response) {
-                console.log("crashReport", crashReport);
-                console.log("response", response.crash_report_ack);
                 var data = $.extend(crashReport, response.crash_report_ack);
-                console.log(data);
                 self.Crashes.push(new CrashVM(data));
                 $('#add-crash-modal').modal('hide');
             });

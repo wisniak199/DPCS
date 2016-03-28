@@ -14,3 +14,11 @@ Installing the client from repository:
 cd client
 python setup.py install
 ```
+
+Creating the debian package:
+----------------------------
+
+```
+cd client
+make builddeb
+```

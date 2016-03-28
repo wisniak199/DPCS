@@ -47,7 +47,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">DCPS</a>
+                <a class="navbar-brand" href="/index.htm">DCPS</a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
@@ -136,16 +136,21 @@
                             <th class="col-md-1">id</th>
                             <th class="col-md-7">name</th>
                             <th class="col-md-1">reports count</th>
-                            <th class="col-md-1">has solution</th>
                             <th class="col-md-1">details</th>
                         </tr>
                     </thead>
                     <tbody data-bind="foreach: crashGroupsData">
                         <tr>
                             <td data-bind="text: GroupId"></td>
-                            <td>name?</td>
-                            <td data-bind="text: count"></td>
-                            <td data-bind="text: hasSolution">?</td>
+                            <td>
+                                <!-- ko if: $data.hasOwnProperty("Solution") -->
+                                    <div class="well-sm" data-bind="text:SolutionName"></div>
+                                <!-- /ko -->
+                                <!-- ko ifnot: $data.hasOwnProperty("Solution") -->
+                                    <i class="text-danger"><strong>no solution</strong></i>
+                                <!-- /ko -->
+                            </td>
+                            <td data-bind="text: Count"></td>
                             <td>
                                 <a href="#" data-bind="click:$root.ViewCrashGroup"><i class="fa fa-lg fa-search-plus"></i></a>
                             </td>
@@ -164,7 +169,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">crash group details</h4>
+                    <h4 class="modal-title">add new crash report</h4>
                 </div>
                 <div class="modal-body" data-bind="template:{name:'crash-edit-template',data:CrashToAdd}">
 
@@ -182,7 +187,6 @@
     
     <script type="text/html" id="crash-edit-template">
         <div class="row">
-            <h4>edit crash</h4>
             <div class="col-sm-12 col-md-12 main">
                 <div class="row">
                     <div class="col-md-12">
@@ -257,25 +261,20 @@
     <script type="text/html" id="crash-group-details-template">
         <div class="row">
             <div class="col-md-12">
-                id: <h4 data-bind="text:GroupId"></h4>
+                <h4 >id: <span data-bind="text:GroupId"></span></h4>
+            <hr/>
             </div>
-            <div class="col-sm-12 col-md-12 main">
-                <div class="row">
-                    <div class="col-md-12">
-                        <!-- ko if: $data.hasOwnProperty("Solution") -->
-                            <div class="row" data-bind="with:Solution">
-                                <h4>solution id: <span data-bind="text: SolutionId"></span></h4>
-                                <div class="well" data-bind="text:ShellScript"></div>
-                            </div>
-                        <!-- /ko -->
-                        <!-- ko ifnot: $data.hasOwnProperty("Solution") -->
-                            <h4>no solution</h4>
-                        <!-- /ko -->
-                    </div>
-                    
-                </div>
+            <div class="col-md-12" data-bind="with:Solution">
+                <!-- ko if: $data.hasOwnProperty("Solution") -->
+                    <h4>solution id: <span data-bind="text: SolutionId"></span></h4>
+                    <div class="well" data-bind="text:ShellScript"></div>
+                <!-- /ko -->
+                <!-- ko ifnot: $data.hasOwnProperty("Solution") -->
+                    <i class="text-danger"><strong>no solution</strong></i>
+                <!-- /ko -->
+            <hr/>
             </div>
-            <h4>crashes</h4>
+            <h4 class="col-md-12">crashes</h4>
             <div class="col-sm-12 col-md-12" data-bind="foreach: Crashes">
                         <div class="row panel">
                             <div class="panel-body">

@@ -5,29 +5,19 @@ function getCrashGroups() {
 
     for (var i = 0; i < crashGroups.length; i++) {
         var cg = crashGroups[i];
-
+        cg.GroupId = crashGroups[i].crash_group_id;
         cg.crashReports = crashReports
             .Where(
                 function (crash) {
                     return crash.crash_report.crash_group_id === cg.crash_group_id;
                 })
             .ToArray();
-
-        cg.hasSolution = solutions
-            .Any(
-                function (solution) {
-                    return solution["solution"]["crash_group_id"] === cg["crash_group_id"];
-                });
     }
 
     return Enumerable.From(crashGroups)
         .Select(
             function (cg) {
-                return {
-                    GroupId: cg["crash_group_id"],
-                    count: cg.crashReports.length,
-                    hasSolution: cg.hasSolution
-                }
+                return new CrashGroupDetailsVM(cg);
             })
         .ToArray();
 }
@@ -159,20 +149,20 @@ function GroupVM(data) {
     
     self.GroupId = data.crash_group_id;
     self.GroupUrl = data.crash_group_url;
+    
+    var solution = data.solution;
+    
+    if(solution){
+        self.Solution = ko.observable(new SolutionVM(solution.solution));
+        
+    }
 }
 
 function CrashGroupDetailsVM(data){
     var self = this;
 
     self.GroupId = data.GroupId;
-        
-    self.crashReports = Enumerable.From(Repository.CrashReports)
-    .Where(
-        function (crash) {
-            return crash.crash_report.crash_group_id === self.GroupId;
-        })
-    .ToArray();
-        
+    
     var solution = Enumerable.From(Repository.Solutions)
         .FirstOrDefault(
             null,
@@ -182,6 +172,8 @@ function CrashGroupDetailsVM(data){
     
     if(solution){
         self.Solution = ko.observable(new SolutionVM(solution.solution));
+        self.SolutionName = solution.solution.shell_script;
+        console.log(solution.solution.shell_script);
     }
     
     self.Crashes = Enumerable.From(Repository.CrashReports)
@@ -203,6 +195,7 @@ function CrashGroupDetailsVM(data){
             }
         )
         .ToArray();
+    self.Count = self.Crashes.length;
 }
 
 function SolutionVM(data) {

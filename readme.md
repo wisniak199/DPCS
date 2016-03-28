@@ -14,11 +14,3 @@ Installing the client from repository:
 cd client
 python setup.py install
 ```
-
-Installing the client settings panel from repository:
------------------------------------------------------
-
-```
-cd client/settings
-python3 setup.py install
-```

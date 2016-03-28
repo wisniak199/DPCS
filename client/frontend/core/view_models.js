@@ -1,47 +1,57 @@
-function getCrashGroups() {
-    var crashGroups = Repository.CrashGroups;
-    var crashReports = Enumerable.From(Repository.CrashReports);
-    var solutions = Enumerable.From(Repository.Solutions);
-
-    for (var i = 0; i < crashGroups.length; i++) {
-        var cg = crashGroups[i];
-        cg.GroupId = crashGroups[i].crash_group_id;
-        cg.crashReports = crashReports
+function getUnassignedReports() {
+    var crashReports = [];
+    $.ajax(Repository.CrashReports.all()).done(function (response) {
+        crashReports = response;
+        Enumerable.From(crashReports)
             .Where(
                 function (crash) {
-                    return crash.crash_report.crash_group_id === cg.crash_group_id;
-                })
+                    return !crash["crash_report"]["crash_group_id"];
+                }
+            )
+            .Select(
+                function (crash) {
+                    return new CrashVM(crash.crash_report);
+                }
+            )
             .ToArray();
-    }
-
-    return Enumerable.From(crashGroups)
-        .Select(
-            function (cg) {
-                return new CrashGroupDetailsVM(cg);
-            })
-        .ToArray();
-}
-
-function getUnassignedReports() {
-    var crashReports = Enumerable.From(Repository.CrashReports)
-        .Where(
-            function (crash) {
-                return !crash["crash_report"]["crash_group_id"];
-            }
-        )
-        .Select(
-            function (crash) {
-                return new CrashVM(crash.crash_report);
-            }
-        )
-        .ToArray();
+    });
     return crashReports;
 }
 
 function MainViewModel() {
     var self = this;
+    
+     self.crashGroupsData = ko.observableArray();
+    
+    $.ajax(Repository.CrashReports.all())
+        .done(function (response) {
+            var ids = Enumerable.From(response)
+                .Select(
+                    function (crash) {
+                        return crash.crash_report.crash_group_id;
+                    })
+                .ToArray();
+            var groups = [];
 
-    self.crashGroupsData = ko.observableArray(getCrashGroups());
+            var groupsRequests = [];
+
+            for (var i = 0; i < ids.length; i++) {
+                groupsRequests.push($.ajax(crashGroups.get(ids[i])));
+            }
+
+            $.when.apply(undefined, groupsRequests).then(
+                function (results) {
+                    groups = [results[0]];
+                    self.crashGroupsData( Enumerable.From(groups)
+                         .Distinct()
+                        .Select(
+                            function (cg) {
+                                return new CrashGroupDetailsVM(cg);
+                            })
+                        .ToArray());
+                });
+        });
+
 
     self.crashReportsData = ko.observableArray(getUnassignedReports());
 
@@ -158,24 +168,15 @@ function CrashGroupDetailsVM(data) {
 
     self.GroupId = data.GroupId || data.crash_group_id;
 
-    var solution = Enumerable.From(Repository.Solutions)
-        .FirstOrDefault(
-            null,
-            function (solution) {
-                return solution["solution"]["crash_group_id"] === self.GroupId;
-            });
-
+    var solution = Repository.Solutions.getFor(self.GroupId);
     if (solution) {
         self.Solution = ko.observable(new SolutionVM(solution.solution));
         self.SolutionName = solution.solution.shell_script;
-    }
+    };
 
-    self.Crashes = Enumerable.From(Repository.CrashReports)
-        .Where(
-            function (crash) {
-                return crash["crash_report"]["crash_group_id"] == self.GroupId;
-            }
-        )
+    var crashes = Repository.CrashReports.getFor(self.GroupId);
+
+    self.Crashes = Enumerable.From(crashes)
         .Select(
             function (crash) {
                 return new CrashVM(crash.crash_report);
@@ -196,7 +197,7 @@ function SolutionVM(data) {
 
 function CrashVM(data) {
     var self = this;
-    
+
     self.ReportId = ko.observable(data.crash_report_id || "");
     self.ReportUrl = ko.observable(data.crash_report_url || "");
     self.Group = ko.observable();

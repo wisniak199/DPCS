@@ -58,7 +58,7 @@
                         <a class="bg-success" href="#" data-bind="click:AddCrash"><i class="fa fa fa-plus"></i> add report</a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="/crash-reports.htm">
                             <i class="fa fa-list"></i> all reports
                         </a>
                     </li>
@@ -282,7 +282,7 @@
                 <!-- /ko -->
                 <hr/>
             </div>
-            <h4 class="col-md-12">crashes</h4>
+            <h4 class="col-md-12">crash reports [<span data-bind="text: Crashes.length"></span>]</h4>
             <div class="col-sm-12 col-md-12" data-bind="foreach: Crashes">
                 <div data-bind="template:{name:'crash-view-template',data:$data}">
 

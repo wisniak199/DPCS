@@ -1,28 +1,9 @@
-function getUnassignedReports() {
-    var crashReports = [];
-    $.ajax(Repository.CrashReports.all()).done(function (response) {
-        crashReports = response;
-        Enumerable.From(crashReports)
-            .Where(
-                function (crash) {
-                    return !crash["crash_report"]["crash_group_id"];
-                }
-            )
-            .Select(
-                function (crash) {
-                    return new CrashVM(crash.crash_report);
-                }
-            )
-            .ToArray();
-    });
-    return crashReports;
-}
-
 function MainViewModel() {
     var self = this;
-    
-     self.crashGroupsData = ko.observableArray();
-    
+
+    self.crashGroupsData = ko.observableArray();
+    self.crashReportsData = ko.observableArray();
+
     $.ajax(Repository.CrashReports.all())
         .done(function (response) {
             var ids = Enumerable.From(response)
@@ -42,8 +23,8 @@ function MainViewModel() {
             $.when.apply(undefined, groupsRequests).then(
                 function (results) {
                     groups = [results[0]];
-                    self.crashGroupsData( Enumerable.From(groups)
-                         .Distinct()
+                    self.crashGroupsData(Enumerable.From(groups)
+                        .Distinct()
                         .Select(
                             function (cg) {
                                 return new CrashGroupDetailsVM(cg);
@@ -52,8 +33,21 @@ function MainViewModel() {
                 });
         });
 
-
-    self.crashReportsData = ko.observableArray(getUnassignedReports());
+    $.ajax(Repository.CrashReports.all()).done(function (response) {
+        var crashReports = response;
+        self.crashReportsData(Enumerable.From(crashReports)
+            .Where(
+                function (crash) {
+                    return !crash["crash_report"]["crash_group_id"];
+                }
+            )
+            .Select(
+                function (crash) {
+                    return new CrashVM(crash.crash_report);
+                }
+            )
+            .ToArray());
+    });
 
     self.selectedCrashGroup = ko.observable();
 

@@ -54,33 +54,37 @@ function MainViewModel() {
 
     self.selectedCrashGroup = ko.observable();
 
-    self.assignReport = function(report){
+    self.assignReport = function (report) {
         var crashGroups = Enumerable.From(Repository.CrashGroups);
         self.selectedId = self.selectedCrashGroup();
-        self.crashGroupUrl = crashGroups.First(function (crashGroup) { return crashGroup.crash_group_id == self.selectedId })["crash_group_url"];
+        self.crashGroupUrl = crashGroups.First(function (crashGroup) {
+            return crashGroup.crash_group_id == self.selectedId
+        })["crash_group_url"];
 
         $.ajax({
-                url: "http://private-anon-71b931be7-dpcs.apiary-mock.com/vd1/crash-reports/"+report.id,
+                url: "http://private-anon-71b931be7-dpcs.apiary-mock.com/vd1/crash-reports/" + report.id,
                 type: "GET",
             })
             .done(function (response) {
                 response["crash_report"]["crash_group_id"] = self.selectedId
                 response["crash_report"]["crash_group_url"] = self.crashGroupUrl
                 $.ajax({
-                        url: "http://private-anon-71b931be7-dpcs.apiary-mock.com/vd1/crash-reports/"+report.id,
+                        url: "http://private-anon-71b931be7-dpcs.apiary-mock.com/vd1/crash-reports/" + report.id,
                         type: "PUT",
-                        data: {"crash_report": response}
+                        data: {
+                            "crash_report": response
+                        }
                     })
                     .done(function (response, textStatus, jqXHR) {
-                        if(jqXHR.status==200) {
+                        if (jqXHR.status == 200) {
                             self.crashReportsData.remove(report)
                         }
                     });
             });
     }
-    
+
     self.CrashToAdd = ko.observable(new CrashVM({}));
-    
+
     self.AddCrash = function () {
         self.CrashToAdd(new CrashVM({}))
         $('#add-crash-modal').modal('show');
@@ -113,11 +117,11 @@ function MainViewModel() {
                 $('#add-crash-modal').modal('hide');
             });
     }
-    
+
     self.SendCrashGroup = function () {
 
         var crashGroup = {
-            
+
         };
 
         $.ajax({
@@ -132,9 +136,9 @@ function MainViewModel() {
                 self.crashGroupsData.push(g);
             });
     }
-    
+
     self.GroupToView = ko.observable(new CrashGroupDetailsVM({}));
-    
+
     self.ViewCrashGroup = function (group) {
         self.GroupToView(ko.observable(new CrashGroupDetailsVM(group)));
         $('#crash-group-details-modal').modal('show');
@@ -146,36 +150,36 @@ function GroupVM(data) {
 
     self.GroupId = ko.observable(data.crash_group_id || "");
     self.GroupUrl = ko.observable(data.crash_group_url || "");
-    
+
     self.GroupId = data.crash_group_id;
     self.GroupUrl = data.crash_group_url;
-    
+
     var solution = data.solution;
-    
-    if(solution){
+
+    if (solution) {
         self.Solution = ko.observable(new SolutionVM(solution.solution));
-        
+
     }
 }
 
-function CrashGroupDetailsVM(data){
+function CrashGroupDetailsVM(data) {
     var self = this;
 
     self.GroupId = data.GroupId;
-    
+
     var solution = Enumerable.From(Repository.Solutions)
         .FirstOrDefault(
             null,
             function (solution) {
                 return solution["solution"]["crash_group_id"] === self.GroupId;
             });
-    
-    if(solution){
+
+    if (solution) {
         self.Solution = ko.observable(new SolutionVM(solution.solution));
         self.SolutionName = solution.solution.shell_script;
         console.log(solution.solution.shell_script);
     }
-    
+
     self.Crashes = Enumerable.From(Repository.CrashReports)
         .Where(
             function (crash) {

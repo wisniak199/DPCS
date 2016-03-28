@@ -144,10 +144,10 @@
                             <td data-bind="text: GroupId"></td>
                             <td>
                                 <!-- ko if: $data.hasOwnProperty("Solution") -->
-                                    <div class="well-sm" data-bind="text:SolutionName"></div>
+                                <div class="well-sm" data-bind="text:SolutionName"></div>
                                 <!-- /ko -->
                                 <!-- ko ifnot: $data.hasOwnProperty("Solution") -->
-                                    <i class="text-danger"><strong>no solution</strong></i>
+                                <i class="text-danger"><strong>no solution</strong></i>
                                 <!-- /ko -->
                             </td>
                             <td data-bind="text: Count"></td>
@@ -184,7 +184,7 @@
         <!-- /.modal-dialog -->
     </div>
     <!-- /.modal -->
-    
+
     <script type="text/html" id="crash-edit-template">
         <div class="row">
             <div class="col-sm-12 col-md-12 main">
@@ -261,50 +261,50 @@
     <script type="text/html" id="crash-group-details-template">
         <div class="row">
             <div class="col-md-12">
-                <h4 >id: <span data-bind="text:GroupId"></span></h4>
-            <hr/>
+                <h4>id: <span data-bind="text:GroupId"></span></h4>
+                <hr/>
             </div>
             <div class="col-md-12" data-bind="with:Solution">
                 <!-- ko if: $data.hasOwnProperty("Solution") -->
-                    <h4>solution id: <span data-bind="text: SolutionId"></span></h4>
-                    <div class="well" data-bind="text:ShellScript"></div>
+                <h4>solution id: <span data-bind="text: SolutionId"></span></h4>
+                <div class="well" data-bind="text:ShellScript"></div>
                 <!-- /ko -->
                 <!-- ko ifnot: $data.hasOwnProperty("Solution") -->
-                    <i class="text-danger"><strong>no solution</strong></i>
+                <i class="text-danger"><strong>no solution</strong></i>
                 <!-- /ko -->
-            <hr/>
+                <hr/>
             </div>
             <h4 class="col-md-12">crashes</h4>
             <div class="col-sm-12 col-md-12" data-bind="foreach: Crashes">
-                        <div class="row panel">
-                            <div class="panel-body">
-                                <div class='col-md-3'>
-                                    <div class="row">
-                                        Crash id: <strong data-bind="text: id"></strong>
-                                    </div>
+                <div class="row panel">
+                    <div class="panel-body">
+                        <div class='col-md-3'>
+                            <div class="row">
+                                Crash id: <strong data-bind="text: id"></strong>
+                            </div>
 
-                                    <div class='row'>
-                                        exit code:
-                                        <strong data-bind="text: exit_code"></strong>
-                                    </div>
-                                </div>
-                                <div class='col-md-5'>
-                                    <div class="row">
-                                        app: <strong data-bind="text: appName"></strong>
-                                    </div>
-                                    <div class="row">
-                                        system:<strong data-bind="text: system"></strong>
-                                    </div>
-                                </div>
-                                <div class='col-md-12 well' data-bind="text: output">
-
-                                </div>
+                            <div class='row'>
+                                exit code:
+                                <strong data-bind="text: exit_code"></strong>
                             </div>
                         </div>
+                        <div class='col-md-5'>
+                            <div class="row">
+                                app: <strong data-bind="text: appName"></strong>
+                            </div>
+                            <div class="row">
+                                system:<strong data-bind="text: system"></strong>
+                            </div>
+                        </div>
+                        <div class='col-md-12 well' data-bind="text: output">
+
+                        </div>
                     </div>
+                </div>
+            </div>
         </div>
     </script>
-    
+
     <!--    PARTIALS END   -->
 
     <!-- Bootstrap core JavaScript

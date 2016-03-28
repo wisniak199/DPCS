@@ -106,7 +106,7 @@ function MainViewModel() {
             })
             .done(function (response) {
                 var data = $.extend(crashReport, response.crash_report_ack);
-                self.Crashes.push(new CrashVM(data));
+                self.crashReportsData.unshift(new CrashVM(data));
                 $('#add-crash-modal').modal('hide');
             });
     }
@@ -122,10 +122,8 @@ function MainViewModel() {
                 type: "PUT"
             })
             .done(function (response) {
-                var data = $.extend(crashGroup, response);
-                var g = new GroupVM(data);
-                g.count = 0;
-                g.hasSolution = false;
+                var data = response;
+                var g = new CrashGroupDetailsVM(data);
                 self.crashGroupsData.push(g);
             });
     }
@@ -158,7 +156,7 @@ function GroupVM(data) {
 function CrashGroupDetailsVM(data) {
     var self = this;
 
-    self.GroupId = data.GroupId;
+    self.GroupId = data.GroupId || data.crash_group_id;
 
     var solution = Enumerable.From(Repository.Solutions)
         .FirstOrDefault(

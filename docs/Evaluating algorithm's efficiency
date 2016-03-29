@@ -1,0 +1,18 @@
+Evaluating algorithm's efficiency
+
+There are following issues which must be consider:
+  We probably want our models to have (and use) option 'don't know the solution' when there are low chances of success.
+  We may have very little test data (for example if model solution can be asses only by human).
+  Wrong decisions may have different scale of consequences – we don’t want to crash computer of our user.
+
+Taking it into account it may be necessary to: 
+  Ask alpha users to give us more feedback than 'this (do not) solved my problem'. It may be possible because some of those will be people somehow interested in our work.
+  Prepare set of examples for which we would establish good solutions and than check our algorithms on those.
+  If our solvers will work not only by suggesting solutions but implementing it, than we could prepare some automatic tests.
+The first of solutions seems easiest (although we probably should do at least some basic tests before giving solver to any user).
+
+
+The other methods of assessment worth considering are:
+  Counting time from giving solution to the user to his (positive or negative) evaluation of results. The shortest time means that solution (even if wrong) was more understandable.
+  Counting users resigning from using given version of solver (but this may not be possible with alpha version)
+

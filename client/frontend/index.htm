@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -31,7 +31,6 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-
     <!--fontawesome-->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 </head>
@@ -52,7 +51,7 @@
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a class="bg-info" href="#" data-bind="click:SendCrashGroup"><i class="fa fa-lg fa-cart-plus"></i> add crash group</a>
+                        <!--                        <a class="bg-info" href="#" data-bind="click:SendCrashGroup"><i class="fa fa-lg fa-cart-plus"></i> add crash group</a>-->
                     </li>
                     <li>
                         <a class="bg-success" href="#" data-bind="click:AddCrash"><i class="fa fa fa-plus"></i> add report</a>
@@ -80,8 +79,8 @@
         <div class="row">
             <div class="col-sm-5 col-md-5 scroll-panel">
                 <div class="row">
-                    <div class="col-sm-12 col-md-12" data-bind="foreach: crashReportsData">
-                        <div data-bind="template:{name:'crash-view-template',data:$data}">
+                    <div class="col-sm-12 col-md-12">
+                        <div data-bind="template:{name:'crash-view-template',foreach:crashReportsData}">
 
                         </div>
                     </div>
@@ -104,12 +103,7 @@
                         <tr>
                             <td data-bind="text: GroupId"></td>
                             <td>
-                                <!-- ko if: $data.hasOwnProperty("Solution") -->
                                 <div class="well-sm" data-bind="text:SolutionName"></div>
-                                <!-- /ko -->
-                                <!-- ko ifnot: $data.hasOwnProperty("Solution") -->
-                                <i class="text-danger"><strong>no solution</strong></i>
-                                <!-- /ko -->
                             </td>
                             <td data-bind="text: Count"></td>
                             <td>
@@ -117,10 +111,32 @@
                             </td>
                         </tr>
                     </tbody>
+                    <tbody data-bind="foreach:crashReportsData">
+                        <tr>
+                            <td data-bind="text:ReportId"></td>
+                            <td>
+                                <!--ko if:Group()-->
+                                <span data-bind="text:Group().GroupId"></span>
+                                <!--/ko-->
+                                <!--ko ifnot:Group()-->
+                                none
+                                <!--/ko-->
+                            </td>
+                            <td data-bind="text:Application().Name"></td>
+                            <td data-bind="text:GroupId"></td>
+                        </tr>
+                    </tbody>
+                    <tbody data-bind="foreach:crashSolutionsData">
+                        <tr>
+                            <td data-bind="text:SolutionId"></td>
+                            <td data-bind="text:Group().GroupId"></td>
+                            <td data-bind="text:ShellScript"></td>
+                            <td data-bind="text:GroupId"></td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>
-    </div>
     </div>
 
     <!--    PARTIALS    -->
@@ -147,45 +163,45 @@
     <!-- /.modal -->
 
     <script type="text/html" id="crash-view-template">
-            <div class="row panel">
-                <div class="panel-body">
-                    <div class='col-md-3'>
-                        <div class="row">
-                            Crash id: <strong data-bind="text: ReportId"></strong>
-                        </div>
+        <div class="row panel">
+            <div class="panel-body">
+                <div class='col-md-3'>
+                    <div class="row">
+                        Crash id: <strong data-bind="text: ReportId"></strong>
+                    </div>
 
-                        <div class='row'>
-                            exit code:
-                            <strong data-bind="text: ExitCode"></strong>
-                        </div>
+                    <div class='row'>
+                        exit code:
+                        <strong data-bind="text: ExitCode"></strong>
                     </div>
-                    <div class='col-md-5'>
-                        <div class="row" data-bind="with: Application">
-                            app: <strong data-bind="text: Name"></strong> <strong data-bind="text: Version"></strong>
-                        </div>
-                        <div class="row" data-bind="with: SystemInfo">
-                            system: <strong data-bind="text: Version"></strong>
-                        </div>
+                </div>
+                <div class='col-md-5'>
+                    <div class="row" data-bind="with: Application">
+                        app: <strong data-bind="text: Name"></strong> <strong data-bind="text: Version"></strong>
                     </div>
-                    <div class='col-md-12 well' data-bind="text: StderrOutput">
+                    <div class="row" data-bind="with: SystemInfo">
+                        system: <strong data-bind="text: Version"></strong>
+                    </div>
+                </div>
+                <div class='col-md-12 well' data-bind="text: StderrOutput">
 
-                    </div>
-                    <div class='col-md-12'>
-                        <div class="row">
-                            <div class="form-inline">
-                                <label class="control-label">Assign to</label>
-                                <select class="form-control" data-bind="foreach: $root.crashGroupsData, value: $root.selectedCrashGroup">
-                                    CG
-                                    <option data-bind="text: GroupId"></option>
-                                </select>
-                                <button type="button" class="btn btn-default" data-bind="click:$root.assignReport.bind($index())"> Confirm </button>
-                            </div>
+                </div>
+                <div class='col-md-12'>
+                    <div class="row">
+                        <div class="form-inline">
+                            <label class="control-label">Assign to</label>
+                            <!--                                <select class="form-control" data-bind="foreach: $root.crashGroupsData, value: $root.selectedCrashGroup">
+                                                                CG
+                                                                <option data-bind="text: GroupId"></option>
+                                                            </select>
+                                                            <button type="button" class="btn btn-default" data-bind="click:$root.assignReport.bind($index())"> Confirm </button>-->
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
     </script>
-    
+
     <script type="text/html" id="crash-edit-template">
         <div class="row">
             <div class="col-sm-12 col-md-12 main">
@@ -251,7 +267,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">close</button>
-                    <button type="button" class="btn btn-primary" data-bind="click:SendCrash">save</button>
+                    <!--                    <button type="button" class="btn btn-primary" data-bind="click:SendCrash">save</button>-->
                 </div>
             </div>
             <!-- /.modal-content -->
@@ -263,7 +279,7 @@
         <div class="row">
             <div class="col-md-12">
                 <h4>id: <span data-bind="text:GroupId"></span></h4>
-                <hr/>
+                <hr />
             </div>
             <div class="col-md-12">
                 <!-- ko if: $data.hasOwnProperty("Solution") -->
@@ -275,7 +291,7 @@
                 <!-- ko ifnot: $data.hasOwnProperty("Solution") -->
                 <i class="text-danger"><strong>no solution</strong></i>
                 <!-- /ko -->
-                <hr/>
+                <hr />
             </div>
             <h4 class="col-md-12">crash reports [<span data-bind="text: Crashes.length"></span>]</h4>
             <div class="col-sm-12 col-md-12" data-bind="foreach: Crashes">
@@ -287,7 +303,6 @@
     </script>
 
     <!--    PARTIALS END   -->
-
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->

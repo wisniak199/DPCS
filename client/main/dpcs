@@ -10,50 +10,14 @@ from string import digits
 import subprocess
 import sys
 
-import platform
-import os
-import re
-import json
-
 from requests import get
 from requests import post
 from requests import RequestException
 
+from dpcs_client.settings import read_settings
+from dpcs_client.systemcheck import systemcheck
+
 EXIT_OK = 0
-
-SERVER_ADDRESS = "http://private-a6e53-dpcs.apiary-mock.com/"
-
-
-def systemcheck():
-    uname = platform.uname()
-    platform_dict = {
-        "system_name": uname[1],
-        "kernel": uname[2],
-        "architecture": uname[4]
-    }
-    package_list = []
-    # get installed packages from dpkg
-    packages_raw_info = \
-        os.popen(
-            "dpkg-query -W -f='${binary:Package}\t${Version}\t${Status}\n'" +
-            " | grep \"install ok installed\""
-        ).read()
-    packages_raw_info = packages_raw_info.split("\n")
-
-    # regex catches {binary:Package} and {Version} from dpkg output
-    package_re = re.compile(r"(.+)\t(.+)\t.*")
-    for line in packages_raw_info:
-        if line:
-            package_info = package_re.match(line)
-            package_dict = {
-                "name": package_info.group(1),
-                "version": package_info.group(2)
-            }
-            package_list.append(package_dict)
-    data = {}
-    data["platform"] = platform_dict
-    data["packages"] = package_list
-    return data
 
 
 def generate_report(exit_code, stderr_output):
@@ -182,6 +146,8 @@ if __name__ == '__main__':
         print("Usage dpcs '[command to check]'")
         sys.exit(1)
 
+    server_address = read_settings()['server_address']
+
     p = subprocess.Popen(sys.argv[1],
                          stderr=subprocess.PIPE,
                          shell=True)
@@ -192,7 +158,7 @@ if __name__ == '__main__':
 
     if code != EXIT_OK:
 
-        api_description_url = SERVER_ADDRESS + "vd1/paths/"
+        api_description_url = server_address + "vd1/paths/"
         try:
             response = get(api_description_url)
         except RequestException as e:
@@ -202,7 +168,7 @@ if __name__ == '__main__':
             exit(2)
 
         api_paths = response.json()
-        crash_report_url = SERVER_ADDRESS + api_paths["crash-reports"]
+        crash_report_url = server_address + api_paths["crash-reports"]
         headers = {
           'Content-Type': 'text/json'
         }

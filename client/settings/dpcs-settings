@@ -7,22 +7,24 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 import os.path
 
+from dpcs_client.settings import DEFAULT_SERVER_ADDRESS
+from dpcs_client.settings import FILE
+from dpcs_client.settings import read_settings
+
 # the window title
 PANELTITLE = "DPCS Settings"
 
 # about DPCS - authors, basic info, licensing and such...
-ABOUT_DPCS = """ To be written!
+ABOUT_DPCS = """AI powered agent, running locally on your machine,
+analyzing what's going on in the logs and overall on the system,
+and advertizing what's wrong, then, hopefully,
+offer an answer to help you fix it.
 """
 
-# minimal window width and height
-WIDTH = 350
-HEIGHT = 400
-# settings dictionary
-settings = {}
-# config file path
-FILE = os.path.expanduser('~/.dpcs/.dpcsconfig')
 
-buttonlist = []
+# minimal window width and height
+WIDTH = 600
+HEIGHT = 200
 
 
 def displaypanel():
@@ -31,33 +33,6 @@ def displaypanel():
     win = SettingsPanel()
     win.show_all()
     Gtk.main()
-
-
-def addCheckButton(label, parent):
-    """ add checkbox with label @label to container @parent
-    """
-    checkButton = Gtk.CheckButton.new_with_label(label)
-    parent.pack_start(checkButton, False, False, 10)
-    buttonlist.append(checkButton)
-    return checkButton
-
-
-def save_setting(checkButton):
-    """ saves checkbox value in settings
-    """
-    if checkButton.get_active():
-        value = 'true'
-    else:
-        value = 'false'
-    settings[checkButton.get_label()] = value
-
-
-def load_setting(checkButton):
-    """ loads initial value of @checkbutton"""
-    if settings[checkButton.get_label()] == 'true':
-        checkButton.set_active(True)
-    else:
-        checkButton.set_active(False)
 
 
 class SettingsPanel(Gtk.Window):
@@ -81,12 +56,10 @@ class SettingsPanel(Gtk.Window):
 
         settingspage = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
 
-        # add setting boxes here by addCheckButton(Label, Box)
-
-        addCheckButton('Enable DPCS', settingspage)
-        addCheckButton('test1', settingspage)
-        addCheckButton('test2', settingspage)
-        addCheckButton('test3', settingspage)
+        settings = read_settings()
+        settingspage.pack_start(self.addTextField('Server address',
+                                                  settings['server_address']),
+                                True, True, 0)
 
         # end of setting boxes
 
@@ -107,19 +80,31 @@ class SettingsPanel(Gtk.Window):
 
         self.ok = Gtk.Button(label="Ok")
         cancel = Gtk.Button(label="Cancel")
+        restore = Gtk.Button(label="Restore default")
         applyb = Gtk.Button(label="Apply")
 
         buttonscontainer.pack_end(self.ok, False, False, 0)
         buttonscontainer.pack_end(applyb, False, False, 0)
+        buttonscontainer.pack_end(restore, False, False, 0)
         buttonscontainer.pack_end(cancel, False, False, 0)
 
         cancel.connect("clicked", Gtk.main_quit)
         applyb.connect("clicked", self.applysettings)
+        restore.connect("clicked", self.restoresettings)
         self.ok.connect("clicked", self.applysettings)
 
         # loads current config
         self.loadconfig()
         self.connect("delete-event", Gtk.main_quit)
+
+    def addTextField(self, label, default_text):
+        self.entry = Gtk.Entry()
+        self.entry.set_text(default_text)
+        label_gtk = Gtk.Label(label)
+        table = Gtk.Table(1, 3, True)
+        table.attach(label_gtk, 0, 1, 0, 1)
+        table.attach(self.entry, 1, 3, 0, 1)
+        return table
 
     def applysettings(self, widget):
         """ writes settings to dpcs.config, exits
@@ -132,23 +117,37 @@ class SettingsPanel(Gtk.Window):
 
         f = open(FILE, 'w')
 
-        for s in buttonlist:
-            save_setting(s)
+        settings = {'server_address': self.entry.get_text()}
         json.dump(settings, f, indent=2)
         f.close()
         if widget == self.ok:
             Gtk.main_quit()
 
+    def restoresettings(self, widget):
+        """Restore default settings."""
+        conf_directory = os.path.dirname(FILE)
+
+        if not os.path.exists(conf_directory):
+            os.makedirs(conf_directory)
+
+        f = open(FILE, 'w')
+
+        settings = {'server_address': DEFAULT_SERVER_ADDRESS}
+        json.dump(settings, f, indent=2)
+        f.close()
+
+        self.entry.set_text(DEFAULT_SERVER_ADDRESS)
+
     def loadconfig(self):
         """ loads current settings from dpcs.config
         """
-        if os.path.isfile(FILE):
-            f = open(FILE, 'r')
-            settings.update(json.load(f))
-            for b in buttonlist:
-                load_setting(b)
-
-            f.close()
+        with open(FILE, 'r') as f:
+            try:
+                settings = json.load(f)
+                if 'server_address' in settings:
+                    self.entry.set_text(settings['server_address'])
+            except ValueError:
+                pass
 
 if __name__ == "__main__":
     displaypanel()

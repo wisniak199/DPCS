@@ -5,6 +5,6 @@ python:
 install:
 - pip install pytest pep8 requests gi
 script:
-- pep8 client server systemcheck
+- pep8 --ignore=E402 client server systemcheck
 notifications:
   email: false

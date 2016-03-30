@@ -1,0 +1,11 @@
+django:
+    build: .
+    ports:
+        - "8000:8000"
+        - "80:80"
+        - "8123:8123"
+    links:
+        - postgres
+
+postgres:
+    image: postgres:9.4

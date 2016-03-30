@@ -12,5 +12,16 @@ Installing the client from repository:
 
 ```
 cd client
-python setup.py install
+sudo python setup.py install
+```
+
+Installing the server from repository:
+--------------------------------------
+
+```
+curl -sSL https://get.docker.com/ | sh
+sudo apt install python-pip
+sudo pip install docker-compose
+cd server/alpha
+sudo docker-compose up
 ```

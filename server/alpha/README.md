@@ -1,16 +1,3 @@
-# Do the following: 
-virtualenv -p python3 venv
-. venv/bin/activate
-pip install Django==1.8.2
-pip install djangorestframework
-pip install  markdown 
-pip install  django-filter 
-
-#python manage.py makemigrations
-#python manage.py migrate
-python manage.py runserver
-
-
 # Now you can go to :
     #1) localhost:8000/crash-reports/
     #2) localhost:8000/crash-groups/
@@ -19,7 +6,7 @@ python manage.py runserver
 # Alternatively you can go to:
     #4) localhost:8000/crash-reports/id/
     #5) localhost:8000/crash-groups/id/
-    #6) localhostL8000/solutions/id/
+    #6) localhost:8000/solutions/id/
 # where id is the ID of either crash report, crash group or a solution
 
 # You can also make other HTTP request to the sites above.

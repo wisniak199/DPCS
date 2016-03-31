@@ -111,29 +111,6 @@
                             </td>
                         </tr>
                     </tbody>
-                    <tbody data-bind="foreach:crashReportsData">
-                        <tr>
-                            <td data-bind="text:ReportId"></td>
-                            <td>
-                                <!--ko if:Group()-->
-                                <span data-bind="text:Group().GroupId"></span>
-                                <!--/ko-->
-                                <!--ko ifnot:Group()-->
-                                none
-                                <!--/ko-->
-                            </td>
-                            <td data-bind="text:Application().Name"></td>
-                            <td data-bind="text:GroupId"></td>
-                        </tr>
-                    </tbody>
-                    <tbody data-bind="foreach:crashSolutionsData">
-                        <tr>
-                            <td data-bind="text:SolutionId"></td>
-                            <td data-bind="text:Group().GroupId"></td>
-                            <td data-bind="text:ShellScript"></td>
-                            <td data-bind="text:GroupId"></td>
-                        </tr>
-                    </tbody>
                 </table>
             </div>
         </div>

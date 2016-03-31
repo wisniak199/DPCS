@@ -112,23 +112,15 @@ function MainViewModel() {
                 });
         }
     
-    //    self.SendCrashGroup = function () {
-    //
-    //        var crashGroup = {
-    //
-    //        };
-    //
-    //        $.ajax({
-    //            url: "http://private-anon-7dff37ec3-dpcs.apiary-mock.com/vd1/crash-groups",
-    //            type: "PUT"
-    //        })
-    //            .done(function (response) {
-    //                var data = response;
-    //                var g = new GroupVM(data, self);
-    //                self.crashGroupsData.push(g);
-    //            });
-    //    }
-    //
+        self.SendCrashGroup = function () {
+            $.ajax(Repository.CrashGroups.post())
+            .done(function (response) {
+                var data = response;
+                var g = new GroupVM(data, self);
+                self.crashGroupsData.push(g);
+            });
+        }
+    
         self.GroupToView = ko.observable(new GroupVM({}, self));
     
         self.ViewCrashGroup = function (group) {

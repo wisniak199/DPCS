@@ -280,11 +280,16 @@ var crashGroups = {
         };
     },
 
-    post: function (data) {
+    post: function () {
+        var id = Math.round(Math.random()*100000);
+        var crashGroup = {
+            crash_group_id: id,
+            crash_group_url: "/vd1/crash-reports/"+id
+        };
         return {
             url: this.url,
             type: "POST",
-            data: data
+            data: crashGroup
         };
     },
 };

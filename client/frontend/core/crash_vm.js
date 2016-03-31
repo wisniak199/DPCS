@@ -13,8 +13,8 @@ function CrashVM(data, root) {
         Version: ko.observable((data.application && data.application.version) || "")
     });
     self.SystemInfo = ko.observable({
-        Name: ko.observable((data.application && data.system_info.name) || ""),
-        Version: ko.observable((data.system_info && data.system_info.version) || "")
+        Name: ko.observable((data.application && data.systeminfo.name) || ""),
+        Version: ko.observable((data.system_info && data.systeminfo.version) || "")
     });
 
     //computed

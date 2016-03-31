@@ -22,8 +22,8 @@ function GroupVM(data, root) {
         });
     });
 
-    self.SolutionName = ko.pureComputed(function () {
-        return self.Solution() ? self.Solution().ShellScript() : "no solution";
+    self.GroupName = ko.pureComputed(function () {
+        return "#" +self.GroupId() + " "+ (self.Solution() ? self.Solution().ShellScript() : "no solution");
     });
 
     self.Count = ko.pureComputed(function () {

@@ -106,7 +106,7 @@
                         <tr>
                             <td data-bind="text: GroupId"></td>
                             <td>
-                                <div class="well-sm" data-bind="text:SolutionName"></div>
+                                <div class="well-sm" data-bind="text:GroupName"></div>
                             </td>
                             <td data-bind="text: Count"></td>
                             <td>
@@ -142,39 +142,38 @@
     </div>
     <!-- /.modal -->
 
-    <script type="text/html" id="crash-view-template">
-        <div class="row panel">
-            <div class="panel-body">
-                <div class='col-md-3'>
-                    <div class="row">
-                        Crash id: <strong data-bind="text: ReportId"></strong>
-                    </div>
+<script type="text/html" id="crash-view-template">
+    <div class="row panel">
+        <div class="panel-body">
+            <div class='col-md-3'>
+                <div class="row">
+                    Crash id: <strong data-bind="text: ReportId"></strong>
+                </div>
 
-                    <div class='row'>
-                        exit code:
-                        <strong data-bind="text: ExitCode"></strong>
-                    </div>
+                <div class='row'>
+                    exit code:
+                    <strong data-bind="text: ExitCode"></strong>
                 </div>
-                <div class='col-md-5'>
-                    <div class="row" data-bind="with: Application">
-                        app: <strong data-bind="text: Name"></strong> <strong data-bind="text: Version"></strong>
-                    </div>
-                    <div class="row" data-bind="with: SystemInfo">
-                        system: <strong data-bind="text: Version"></strong>
-                    </div>
+            </div>
+            <div class='col-md-5'>
+                <div class="row" data-bind="with: Application">
+                    app: <strong data-bind="text: Name"></strong> <strong data-bind="text: Version"></strong>
                 </div>
-                <div class='col-md-12 well' data-bind="text: StderrOutput">
+                <div class="row" data-bind="with: SystemInfo">
+                    system: <strong data-bind="text: Version"></strong>
+                </div>
+            </div>
+            <div class='col-md-12 well' data-bind="text: StderrOutput">
 
-                </div>
-                <div class='col-md-12'>
-                    <div class="row">
-                        <div class="form-inline">
-                            <label class="control-label">Assign to</label>
-                            <!--                                <select class="form-control" data-bind="foreach: $root.crashGroupsData, value: $root.selectedCrashGroup">
-                                                                CG
-                                                                <option data-bind="text: GroupId"></option>
-                                                            </select>
-                                                            <button type="button" class="btn btn-default" data-bind="click:$root.assignReport.bind($index())"> Confirm </button>-->
+            </div>
+            <div class='col-md-12'>
+                <div class="row">
+                    <div class="form-inline">
+                        <label class="control-label">Assign to</label>
+                        <select data-bind="options: $root.crashGroupsData,optionsText: 'GroupName',optionsValue:'GroupId',value: NewCrashGroup,optionsCaption: 'Assign crash group...'"></select>
+
+                        <button type="button" class="btn" data-bind="click:assignReport , css:ConfirmButtonClass"> Confirm </button>
+
                         </div>
                     </div>
                 </div>

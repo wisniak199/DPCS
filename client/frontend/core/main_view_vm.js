@@ -4,17 +4,7 @@ function MainViewModel() {
     self.crashGroupsData = ko.observableArray();
     self.crashReportsData = ko.observableArray();
     self.crashSolutionsData = ko.observableArray();
-
-
-    //load all crash groups
-    $.ajax(Repository.CrashGroups.all())
-        .done(function (response) {
-            ko.utils.arrayForEach(response, function (cg) {
-                self.crashGroupsData.push(new GroupVM(cg, self));
-            });
-        });
-
-
+    
     //load all crash reports
     $.ajax(Repository.CrashReports.all()).done(function (response) {
         var reports = Enumerable.From(response)
@@ -26,6 +16,27 @@ function MainViewModel() {
             .ToArray();
         ko.utils.arrayPushAll(self.crashReportsData, reports);
     });
+    
+    self.unassignedCrashReports = ko.pureComputed(function(){
+        return Enumerable.From(self.crashReportsData())
+            .Where(
+                function (crash) {
+                    return crash.crash_group_id == -1;
+                }
+            )
+            .ToArray();
+    })
+
+    //load all crash groups
+    $.ajax(Repository.CrashGroups.all())
+        .done(function (response) {
+            ko.utils.arrayForEach(response, function (cg) {
+                self.crashGroupsData.push(new GroupVM(cg, self));
+            });
+        });
+
+
+    
 
     //load all solutions
     $.ajax(Repository.Solutions.all()).done(function (response) {

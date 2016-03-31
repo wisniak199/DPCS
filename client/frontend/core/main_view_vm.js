@@ -7,26 +7,11 @@ function MainViewModel() {
 
 
     //load all crash groups
-    $.ajax(Repository.CrashReports.all())
+    $.ajax(Repository.CrashGroups.all())
         .done(function (response) {
-            var cgPromises = Enumerable.From(response)
-                .Select(
-                    function (crash) {
-                        return crash.crash_report.crash_group_id;
-
-                    })
-                .Distinct()
-                .Select(function (id) {
-                    return $.ajax(crashGroups.get(id));
-                })
-                .ToArray();
-
-            Promise.all(cgPromises)
-                .then(function (responses) {
-                    ko.utils.arrayForEach(responses, function (response) {
-                        self.crashGroupsData.push(new GroupVM(response, self));
-                    });
-                });
+            ko.utils.arrayForEach(response, function (cg) {
+                self.crashGroupsData.push(new GroupVM(cg, self));
+            });
         });
 
 
@@ -35,7 +20,7 @@ function MainViewModel() {
         var reports = Enumerable.From(response)
             .Select(
                 function (crash) {
-                    return new CrashVM(crash.crash_report, self);
+                    return new CrashVM(crash, self);
                 }
             )
             .ToArray();

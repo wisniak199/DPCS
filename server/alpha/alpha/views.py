@@ -1,5 +1,6 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -295,3 +296,7 @@ def solution_list(request):
         solutions = Solution.objects.all()
         serializer = SolutionSerializer(solutions, many=True)
         return Response(serializer.data)
+
+@api_view(['GET'])
+def paths(request):
+	return JsonResponse({"crash-reports": "vd1/crash-reports/", "crash-groups": "vd1/crash-groups/", "solutions": "vd1/solutions/"})

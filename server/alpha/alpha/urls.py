@@ -13,4 +13,6 @@ urlpatterns = [
 
     url(r'^solutions/(?P<pk>[0-9]+)/$', views.solution_detail),
     url(r'^solutions/$', views.solution_list),
+
+    url(r'^paths/$', views.paths),
 ]

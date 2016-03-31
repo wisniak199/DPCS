@@ -165,9 +165,10 @@ if __name__ == '__main__':
         try:
             response = get(api_description_url)
         except RequestException as e:
-            handle_request_error(
-                e, "DPCS couldn't get api description"
-            )
+            #handle_request_error(
+            #    e, "DPCS couldn't get api description"
+            #)
+            print("DPCS server: Offline")
             exit(2)
 
         api_paths = response.json()

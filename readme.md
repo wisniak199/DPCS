@@ -30,6 +30,7 @@ Creating the debian package:
 ----------------------------
 
 ```
+sudo apt install debhelper python-requests python-gi automake cdbs
 cd client
 make builddeb
 ```

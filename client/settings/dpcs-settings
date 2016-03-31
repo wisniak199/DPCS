@@ -1,8 +1,7 @@
 #!/usr/bin/env python2
 
 import json
-import pgi as gi
-gi.install_as_gi()
+import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 import os.path
@@ -141,13 +140,16 @@ class SettingsPanel(Gtk.Window):
     def loadconfig(self):
         """ loads current settings from dpcs.config
         """
-        with open(FILE, 'r') as f:
-            try:
-                settings = json.load(f)
-                if 'server_address' in settings:
-                    self.entry.set_text(settings['server_address'])
-            except ValueError:
-                pass
+        try:
+            with open(FILE, 'r') as f:
+                try:
+                    settings = json.load(f)
+                    if 'server_address' in settings:
+                        self.entry.set_text(settings['server_address'])
+                except ValueError:
+                    pass
+        except IOError:
+            pass
 
 if __name__ == "__main__":
     displaypanel()

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -57,7 +57,7 @@
                         <a class="bg-info" href="#" data-bind="click:SendCrashGroup"><i class="fa fa-lg fa-cart-plus"></i> add crash group</a>
                     </li>
                     <li>
-                        <a class="bg-success" href="#"><i class="fa fa fa-plus"></i> add report</a>
+                        <a class="bg-success" href="#" data-bind="click:AddCrash"><i class="fa fa fa-plus"></i> add report</a>
                     </li>
                     <li>
                         <a href="/crash-reports.htm">
@@ -160,6 +160,7 @@
                     app: <strong data-bind="text: Name"></strong> <strong data-bind="text: Version"></strong>
                 </div>
                 <div class="row" data-bind="with: SystemInfo">
+                    name: <strong data-bind="text: Name"></strong>
                     system: <strong data-bind="text: Version"></strong>
                 </div>
             </div>
@@ -202,9 +203,13 @@
                     <div class="col-md-12">
                         <h4>system</h4>
                         <div class="row" data-bind="with:SystemInfo">
-                            <div class="form-group col-md-12">
-                                <label for="system-version">version *</label>
-                                <input class="form-control" id="system-version" placeholder="version of the system" data-bind="value:Version">
+                            <div class="form-group col-md-6">
+                                <label for="app-name">name *</label>
+                                <input class="form-control" id="app-name" placeholder="app name" data-bind="value:Name">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="app-version">version *</label>
+                                <input class="form-control" id="app-version" placeholder="app version" data-bind="value:Version">
                             </div>
                         </div>
                     </div>

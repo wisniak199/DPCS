@@ -102,7 +102,8 @@ function MainViewModel() {
                     "name": self.CrashToAdd().Application().Name(),
                     "version": self.CrashToAdd().Application().Version()
                 },
-                "system_info": {
+                "systeminfo": {
+                    "name": self.CrashToAdd().SystemInfo().Name(),
                     "version": self.CrashToAdd().SystemInfo().Version()
                 },
                 "exit_code": self.CrashToAdd().ExitCode(),

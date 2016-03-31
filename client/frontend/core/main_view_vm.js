@@ -71,14 +71,14 @@ function MainViewModel() {
     //        })["crash_group_url"];
     //
     //        $.ajax({
-    //            url: "http://private-anon-71b931be7-dpcs.apiary-mock.com/vd1/crash-reports/" + report.id,
+    //            url: API_URL + "/vd1/crash-reports/" + report.id,
     //            type: "GET",
     //        })
     //            .done(function (response) {
     //                response["crash_report"]["crash_group_id"] = self.selectedId
     //                response["crash_report"]["crash_group_url"] = self.crashGroupUrl
     //                $.ajax({
-    //                    url: "http://private-anon-71b931be7-dpcs.apiary-mock.com/vd1/crash-reports/" + report.id,
+    //                    url: API_URL + "/vd1/crash-reports/" + report.id,
     //                    type: "PUT",
     //                    data: {
     //                        "crash_report": response
@@ -114,7 +114,7 @@ function MainViewModel() {
             };
     
             $.ajax({
-                url: "http://private-anon-71b931be7-dpcs.apiary-mock.com/vd1/crash-reports/",
+                url: API_URL + "/vd1/crash-reports/",
                 type: "POST",
                 data: {
                     "crash_report": crashReport

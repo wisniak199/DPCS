@@ -190,8 +190,13 @@ var Mock = {
 ],
 };
 
+var apiary_url = API_URL + "";
+var server_url = "http://54.93.105.103:8000";
+
+var API_URL = server_url;
+
 var crashReports = {
-    url: "http://private-anon-71b931be7-dpcs.apiary-mock.com/vd1/crash-reports/",
+    url: API_URL + "/vd1/crash-reports/",
 
     all: function () {
         return {
@@ -252,38 +257,19 @@ var crashReports = {
 };
 
 var crashGroups = {
-    url: "http://private-anon-71b931be7-dpcs.apiary-mock.com/vd1/crash-groups/",
+    url: API_URL + "/vd1/crash-groups/",
 
-    all: function () {
-        $.ajax(crashReports.all())
-            .done(function (response) {
-                var ids = Enumerable.From(response)
-                    .Select(
-                        function (crash) {
-                            return crash.crash_report.crash_group_id;
-                        })
-                    .ToArray();
-                var groups = [];
-
-                var groupsRequests = [];
-            
-                for (var i = 0; i < ids.length; i++) {
-                    groupsRequests.push($.ajax(crashGroups.get(ids[i])));
-                }
-                
-                 $.when.apply(undefined, groupsRequests).then(
-                    function(results){
-                        groups = results[0];
-                       return groups;
-                    })
-            });
+    all: function (id) {
+        return {
+            url: this.url + "?format=json",
+            type: "GET",
+        };
     },
-
     get: function (id) {
         return {
             url: this.url + id,
             type: "GET",
-        }
+        };
     },
 
     put: function (id, data) {
@@ -291,7 +277,7 @@ var crashGroups = {
             url: this.url + id,
             type: "PUT",
             data: data
-        }
+        };
     },
 
     post: function (data) {
@@ -299,12 +285,12 @@ var crashGroups = {
             url: this.url,
             type: "POST",
             data: data
-        }
+        };
     },
 };
 
 var solutions = {
-    url: "http://private-anon-71b931be7-dpcs.apiary-mock.com/vd1/solutions/",
+    url: API_URL + "/vd1/solutions/",
 
     all: function (query) {
         if (!query) {

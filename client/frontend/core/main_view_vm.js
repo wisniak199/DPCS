@@ -135,11 +135,4 @@ function MainViewModel() {
             self.GroupToView(group);
             $('#crash-group-details-modal').modal('show');
         }
-
-
-
-
-
-
-    //test data --------------------
 }

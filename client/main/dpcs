@@ -169,6 +169,7 @@ if __name__ == '__main__':
 
         api_paths = response.json()
         crash_report_url = server_address + api_paths["crash-reports"]
+
         headers = {
           'Content-Type': 'text/json'
         }

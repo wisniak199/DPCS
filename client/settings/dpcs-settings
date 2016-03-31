@@ -141,13 +141,16 @@ class SettingsPanel(Gtk.Window):
     def loadconfig(self):
         """ loads current settings from dpcs.config
         """
-        with open(FILE, 'r') as f:
-            try:
-                settings = json.load(f)
-                if 'server_address' in settings:
-                    self.entry.set_text(settings['server_address'])
-            except ValueError:
-                pass
+        try:
+            with open(FILE, 'r') as f:
+                try:
+                    settings = json.load(f)
+                    if 'server_address' in settings:
+                        self.entry.set_text(settings['server_address'])
+                except ValueError:
+                    pass
+        except IOError:
+            pass
 
 if __name__ == "__main__":
     displaypanel()

@@ -3,7 +3,7 @@ import json
 import os
 
 # config file path
-DEFAULT_SERVER_ADDRESS = "http://private-a6e53-dpcs.apiary-mock.com/"
+DEFAULT_SERVER_ADDRESS = "http://54.93.105.103:8000/"
 FILE = os.path.expanduser('~/.dpcs/.dpcsconfig')
 
 DEFAULT_SETTINGS = {'server_address': DEFAULT_SERVER_ADDRESS}

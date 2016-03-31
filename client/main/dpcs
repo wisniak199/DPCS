@@ -1,3 +1,4 @@
+#! /usr/bin/env python2
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 from os import mkdir
@@ -13,11 +14,10 @@ from requests import get
 from requests import post
 from requests import RequestException
 
-from ...systemcheck.systemcheck import systemcheck
+from dpcs_client.settings import read_settings
+from dpcs_client.systemcheck import systemcheck
 
 EXIT_OK = 0
-
-SERVER_ADDRESS = "http://private-a6e53-dpcs.apiary-mock.com/"
 
 
 def generate_report(exit_code, stderr_output):
@@ -143,8 +143,10 @@ def save_script(script):
 if __name__ == '__main__':
 
     if len(sys.argv) != 2:
-        print("Usage python client.py '[command to check]'")
-        exit(1)
+        print("Usage dpcs '[command to check]'")
+        sys.exit(1)
+
+    server_address = read_settings()['server_address']
 
     p = subprocess.Popen(sys.argv[1],
                          stderr=subprocess.PIPE,
@@ -156,7 +158,7 @@ if __name__ == '__main__':
 
     if code != EXIT_OK:
 
-        api_description_url = SERVER_ADDRESS + "vd1/paths/"
+        api_description_url = server_address + "vd1/paths/"
         try:
             response = get(api_description_url)
         except RequestException as e:
@@ -166,7 +168,7 @@ if __name__ == '__main__':
             exit(2)
 
         api_paths = response.json()
-        crash_report_url = SERVER_ADDRESS + api_paths["crash-reports"]
+        crash_report_url = server_address + api_paths["crash-reports"]
         headers = {
           'Content-Type': 'text/json'
         }

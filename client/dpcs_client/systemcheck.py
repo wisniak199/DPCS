@@ -1,9 +1,7 @@
-#!/usr/bin/python
-
-import platform
+"""Utilities for checking system's information."""
 import os
+import platform
 import re
-import json
 
 
 def systemcheck():
@@ -17,7 +15,8 @@ def systemcheck():
     # get installed packages from dpkg
     packages_raw_info = \
         os.popen(
-            "dpkg-query -W -f='${binary:Package}\t${Version}\t${Status}\n' | grep \"install ok installed\""
+            "dpkg-query -W -f='${binary:Package}\t${Version}\t${Status}\n'" +
+            " | grep \"install ok installed\""
         ).read()
     packages_raw_info = packages_raw_info.split("\n")
 
@@ -35,8 +34,3 @@ def systemcheck():
     data["platform"] = platform_dict
     data["packages"] = package_list
     return data
-
-
-if __name__ == "__main__":
-
-    print(json.dumps(systemcheck()))

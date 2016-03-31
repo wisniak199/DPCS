@@ -1,0 +1,17 @@
+Source: dpcs
+Section: python
+Priority: optional
+Maintainer: Marek Bardoński, <bdfhjk@gmail.com>
+Build-Depends: debhelper (>= 7),
+               python (>= 2.6.6-3~),
+               python-requests (>= 2.2),
+               python-gi (>= 3.12)
+Standards-Version: 3.9.2
+X-Python-Version: >= 2.6
+
+Package: dpcs
+Architecture: all
+Section: python
+Depends: ${misc:Depends}, ${python:Depends}
+Description: An application, that would help Ubuntu users in effortless problem solving.
+ An application for automatic problem solving in Ubuntu OS. In short, our application would first gather large amount of data concerning crashes of application that Ubuntu users have encountered during their work. Next we would analyze those errors and find solutions. Based on the resulting database, a user would be proposed a solution for an error that he encounters.

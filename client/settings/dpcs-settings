@@ -1,0 +1,153 @@
+#!/usr/bin/env python2
+
+import json
+import pgi as gi
+gi.install_as_gi()
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
+import os.path
+
+from dpcs_client.settings import DEFAULT_SERVER_ADDRESS
+from dpcs_client.settings import FILE
+from dpcs_client.settings import read_settings
+
+# the window title
+PANELTITLE = "DPCS Settings"
+
+# about DPCS - authors, basic info, licensing and such...
+ABOUT_DPCS = """AI powered agent, running locally on your machine,
+analyzing what's going on in the logs and overall on the system,
+and advertizing what's wrong, then, hopefully,
+offer an answer to help you fix it.
+"""
+
+
+# minimal window width and height
+WIDTH = 600
+HEIGHT = 200
+
+
+def displaypanel():
+    """ displays the prefs dialog
+    """
+    win = SettingsPanel()
+    win.show_all()
+    Gtk.main()
+
+
+class SettingsPanel(Gtk.Window):
+    """ The preferences dialog for DPCS"""
+
+    def __init__(self):
+        Gtk.Window.__init__(self, title=PANELTITLE)
+        self.set_size_request(WIDTH, HEIGHT)
+
+        maincontainer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL,
+                                spacing=0)
+        self.add(maincontainer)
+
+        notebook = Gtk.Notebook()
+        maincontainer.pack_start(notebook, True, True, 0)
+
+        buttonscontainer = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        maincontainer.pack_start(buttonscontainer, False, False, 0)
+
+        # settings tab
+
+        settingspage = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+
+        settings = read_settings()
+        settingspage.pack_start(self.addTextField('Server address',
+                                                  settings['server_address']),
+                                True, True, 0)
+
+        # end of setting boxes
+
+        notebook.append_page(settingspage, Gtk.Label('Settings'))
+
+        # about DPCS tab
+
+        aboutpage = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=5)
+
+        acontent = Gtk.Label()
+        acontent.set_text(ABOUT_DPCS)
+        acontent.set_justify(Gtk.Justification.LEFT)
+        aboutpage.pack_start(acontent, True, True, 0)
+
+        notebook.append_page(aboutpage, Gtk.Label('About DPCS'))
+
+        # ok, apply and cancel buttons
+
+        self.ok = Gtk.Button(label="Ok")
+        cancel = Gtk.Button(label="Cancel")
+        restore = Gtk.Button(label="Restore default")
+        applyb = Gtk.Button(label="Apply")
+
+        buttonscontainer.pack_end(self.ok, False, False, 0)
+        buttonscontainer.pack_end(applyb, False, False, 0)
+        buttonscontainer.pack_end(restore, False, False, 0)
+        buttonscontainer.pack_end(cancel, False, False, 0)
+
+        cancel.connect("clicked", Gtk.main_quit)
+        applyb.connect("clicked", self.applysettings)
+        restore.connect("clicked", self.restoresettings)
+        self.ok.connect("clicked", self.applysettings)
+
+        # loads current config
+        self.loadconfig()
+        self.connect("delete-event", Gtk.main_quit)
+
+    def addTextField(self, label, default_text):
+        self.entry = Gtk.Entry()
+        self.entry.set_text(default_text)
+        label_gtk = Gtk.Label(label)
+        table = Gtk.Table(1, 3, True)
+        table.attach(label_gtk, 0, 1, 0, 1)
+        table.attach(self.entry, 1, 3, 0, 1)
+        return table
+
+    def applysettings(self, widget):
+        """ writes settings to dpcs.config, exits
+        if ok has been pressed
+        """
+        conf_directory = os.path.dirname(FILE)
+
+        if not os.path.exists(conf_directory):
+            os.makedirs(conf_directory)
+
+        f = open(FILE, 'w')
+
+        settings = {'server_address': self.entry.get_text()}
+        json.dump(settings, f, indent=2)
+        f.close()
+        if widget == self.ok:
+            Gtk.main_quit()
+
+    def restoresettings(self, widget):
+        """Restore default settings."""
+        conf_directory = os.path.dirname(FILE)
+
+        if not os.path.exists(conf_directory):
+            os.makedirs(conf_directory)
+
+        f = open(FILE, 'w')
+
+        settings = {'server_address': DEFAULT_SERVER_ADDRESS}
+        json.dump(settings, f, indent=2)
+        f.close()
+
+        self.entry.set_text(DEFAULT_SERVER_ADDRESS)
+
+    def loadconfig(self):
+        """ loads current settings from dpcs.config
+        """
+        with open(FILE, 'r') as f:
+            try:
+                settings = json.load(f)
+                if 'server_address' in settings:
+                    self.entry.set_text(settings['server_address'])
+            except ValueError:
+                pass
+
+if __name__ == "__main__":
+    displaypanel()

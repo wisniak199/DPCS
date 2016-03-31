@@ -6,3 +6,30 @@ There are 3 phases to get this done.
 First a "model" has to be trained. This requires a lot of data from running and failing systems, to identify issues, causes, and solutions
 Then an agent capable of using this model and run it locally has to be created (you don't want to ship your logs to the cloud permanently, everything has to be local)
 Then it needs to improve over time, and keep getting better as more and more problems arise, so it's kind of a ever-running system.
+
+Installing the client from repository:
+--------------------------------------
+
+```
+cd client
+sudo python setup.py install
+```
+
+Installing the server from repository:
+--------------------------------------
+
+```
+curl -sSL https://get.docker.com/ | sh
+sudo apt install python-pip
+sudo pip install docker-compose
+cd server/alpha
+sudo docker-compose up
+```
+
+Creating the debian package:
+----------------------------
+
+```
+cd client
+make builddeb
+```

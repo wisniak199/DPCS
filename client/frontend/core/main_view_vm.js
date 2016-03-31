@@ -142,33 +142,4 @@ function MainViewModel() {
 
 
     //test data --------------------
-        var testGroup = new GroupVM({
-            "crash_group_id": 425,
-            "crash_group_url": "vd1/crash-groups/425"
-        }, self);
-
-        self.crashGroupsData.push(testGroup);
-
-        testGroup = new GroupVM({
-            "crash_group_id": 124,
-            "crash_group_url": "vd1/crash-groups/124"
-        }, self);
-
-        self.crashGroupsData.push(testGroup);
-
-        var testReport = new CrashVM({
-            "crash_report_id": 1000,
-            "crash_report_url": "vd1/crash-reports/1000",
-            "application": {
-                "name": "Mozilla firefox",
-                "version": "15.0"
-            },
-            "system_info": {
-                "version": "14.04.1 LTS"
-            },
-            "exit_code": 1,
-            "stderr_output": "error: fox overflow"
-        }, self);
-
-        self.crashReportsData.push(testReport);
 }

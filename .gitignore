@@ -79,3 +79,5 @@ celerybeat-schedule
 
 # Spyder project settings
 .spyderproject
+client/frontend/node_modules/
+client/frontend/.idea/

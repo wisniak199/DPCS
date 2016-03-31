@@ -21,7 +21,7 @@ function MainViewModel() {
         return Enumerable.From(self.crashReportsData())
             .Where(
                 function (crash) {
-                    return crash.crash_group_id == -1;
+                    return !crash.GroupId();
                 }
             )
             .ToArray();

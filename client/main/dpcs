@@ -189,8 +189,10 @@ if __name__ == '__main__':
             )
             exit(3)
 
-        script = response.json()['crash_report_ack'][
-                                 'solution']['shell_script']
+        script = '#No known solution have been found'
+        if 'crash_report_ack' in response.json():
+            script = response.json()['crash_report_ack'][
+                                     'solution']['shell_script']
 
         print("DPCS might have found a solution to your problem!")
         print("How would you like to use it?")

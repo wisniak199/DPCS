@@ -7,6 +7,7 @@ from random import sample
 from string import ascii_lowercase
 from string import ascii_uppercase
 from string import digits
+import json
 import subprocess
 import sys
 
@@ -52,8 +53,10 @@ def generate_report(exit_code, stderr_output):
 
     for k, v in system_info['platform'].iteritems():
         template['crash_report']['system_info'][k] = v
+    template['crash_report']['system_info'][
+             'packages'] = system_info['packages']
 
-    return template
+    return json.dumps(template)
 
 
 def handle_request_error(exception, dpcs_message):
@@ -171,7 +174,7 @@ if __name__ == '__main__':
         crash_report_url = server_address + api_paths["crash-reports"]
 
         headers = {
-          'Content-Type': 'text/json'
+          'Content-Type': 'application/json'
         }
 
         report = generate_report(code, output)

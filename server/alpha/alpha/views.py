@@ -14,14 +14,12 @@ from alpha.serializers import CrashGroupSerializer, \
 # Otherwise returns -1
 def add_crash_report(request):
     if request.method == 'POST':
-
         # assume the data is passed correctly ...
-        cr_id = int(request.data['crash_report_id'])
-        cg_id = int(request.data['crash_group_id'])
-        std_err = request.data['stderr_output']
-        ex_code = int(request.data['exit_code'])
-        ap = request.data['application']
-        sysinfo = request.data['systeminfo']
+        cr_id = request.data.get('crash_report_id', None)
+        cg_id = request.data.get('crash_group_id', None)
+        std_err = request.data['crash_report']['stderr_output']
+        ex_code = int(request.data['crash_report']['exit_code'])
+        sysinfo = request.data['crash_report']['system_info']
 
         try:
             CrashReport.objects.get(pk=cr_id)
@@ -29,32 +27,30 @@ def add_crash_report(request):
         except CrashReport.DoesNotExist:
             pass
 
-        try:
-            cg = CrashGroup.objects.get(crash_group_id=cg_id)
-        except CrashGroup.DoesNotExist:
-            cg = CrashGroup(crash_group_id=cg_id)
-            cg.save()
+        cg = None
+        if cg_id:
+            try:
+                cg = CrashGroup.objects.get(crash_group_id=cg_id)
+            except CrashGroup.DoesNotExist:
+                cg = CrashGroup(crash_group_id=cg_id)
+                cg.save()
 
         try:
-            app = Application.objects.get(version=ap["version"])
-        except Application.DoesNotExist:
-            app = Application(version=ap["version"])
-            app.save()
-
-        try:
-            system = SystemInfo.objects.get(version=sysinfo["version"])
+            system = SystemInfo.objects.get(platform=sysinfo["architecture"],
+                                            packages=sysinfo["packages"])
         except SystemInfo.DoesNotExist:
-            system = SystemInfo(version=sysinfo["version"])
+            system = SystemInfo(platform=sysinfo["architecture"],
+                                packages=sysinfo['packages'])
             system.save()
 
         new_crash_report = CrashReport(
             crash_report_id=cr_id, crash_group_id=cg,
-            stderr_output=std_err, exit_code=ex_code, application=app,
+            stderr_output=std_err, exit_code=ex_code,
             systeminfo=system
         )
 
         new_crash_report.save()
-        return cr_id
+        return new_crash_report.crash_report_id
     return -1
 
 
@@ -140,6 +136,8 @@ def crash_report_list(request):
             )
         report = CrashReport.objects.get(pk=added)
         serializer = CrashReportSerializer(report)
+        # TO DO Should return sth like a response from here
+        # http://docs.dpcs.apiary.io/#reference/crashes/crash-report-collection/send-a-new-report
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
@@ -161,7 +159,8 @@ def crash_report_detail(request, pk):
             serializer.save()
             return Response(serializer.data)
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
         report.delete()
@@ -212,8 +211,8 @@ def crash_report_add(request):
             context_instance=RequestContext(request)
         )
     elif request.method == 'POST':
-        cr_id = int(request.POST.get('crash_report_id'))
-        cg_id = int(request.POST.get('crash_group_id'))
+        cr_id = int(request.POST.get('crash_report_id', None))
+        cg_id = int(request.POST.get('crash_group_id', None))
         std_err = request.POST.get('stderr_output')
         ex_code = int(request.POST.get('exit_code'))
         app_name = request.POST.get('application_name')

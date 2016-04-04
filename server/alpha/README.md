@@ -1,0 +1,18 @@
+# Now you can go to :
+    #1) localhost:8000/crash-reports/
+    #2) localhost:8000/crash-groups/
+    #3) localhost:8000/solutions/
+# to see lists of crash reports, crash groups, and solutions.
+# Alternatively you can go to:
+    #4) localhost:8000/crash-reports/id/
+    #5) localhost:8000/crash-groups/id/
+    #6) localhost:8000/solutions/id/
+# where id is the ID of either crash report, crash group or a solution
+
+# You can also make other HTTP request to the sites above.
+# If you want to create a new crash report you need to send HTTP POST request to #1)
+# Similary you send HTTP POST request to create new crash-group or solution to #2) or #3)
+
+# If you want to change a specific crash report you send HTTP PUT request to #4).
+
+# If you want to delete a specific crash report, crash group or a solution, you send a HTTP DELETE request to either #4), #5), or #6).

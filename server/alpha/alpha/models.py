@@ -20,6 +20,7 @@ class SystemInfo(models.Model):
     name = models.CharField(max_length=255, default="Ubuntu")
     platform = models.CharField(max_length=255)
     packages = models.TextField()
+    version = models.CharField(max_length=255)
 
     def __str__(self):
         return "System information: " + self.name + self.version + "\n"
@@ -31,7 +32,7 @@ class CrashReport(models.Model):
                                        related_name='crash_group_reports')
     stderr_output = models.TextField()
     exit_code = models.IntegerField()
-    systeminfo = models.ForeignKey(SystemInfo)
+    system_info = models.ForeignKey(SystemInfo)
     application = models.ForeignKey(Application, null=True)
 
     def __str__(self):

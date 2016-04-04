@@ -1,0 +1,52 @@
+
+Added:
+- Compatibilty with http://docs.dpcs.apiary.io/#.
+
+A few issues regarding API at http://docs.dpcs.apiary.io/#:
+
+1) Adding a crash group
+According to API, the adding of a crash group should be available with
+PUT request, made to the address 'http://server.address.com/vd1/crash-groups'
+http://docs.dpcs.apiary.io/#reference/crashes/crash-groups-collection/create-new-crash-group
+
+However, if we take a look at the API for getting crash-groups paths
+http://docs.dpcs.apiary.io/#reference/0/api-paths/get-api-paths
+we will notice that there is a '/' at the end of the path regarding crash-group:
+{
+...
+"crash-groups": "vd1/crash-groups/",
+...
+}
+
+Since all of our paths will be taken from GET request at vd1/paths/,
+I assumed it was a mistake in apiary, and proceeded with adding a '/' after all,
+to save consistency
+
+Also, if we want to add a new request do we want to use PUT method?
+If so it would seem inconsistent with how we add a crash report(POST request) or crash group(POST request).
+For now I've left the put method to add a new crash group.
+    
+Current way of adding a crash group:
+    PUT request to http://server.address.com/vd1/crash-groups/
+        
+
+2)
+I have noticed that the model for system information has changed.
+New fields, like "packages" and "platform" were added.
+
+Because of the lack of the official information,
+in the current version of the django server, those values shall be ignored,
+in order to guarantee compability with http://docs.dpcs.apiary.io/#.
+
+3)POSTING new solution
+When posting new solution, according to 
+http://docs.dpcs.apiary.io/#reference/solutions/solution-collection/post-new-solution, 
+we should specify: "crash_group_id", "crash_group_url", and "shell_script".
+
+The question is: why posting crash_group_url ? Isn't crash_group_id enough
+for the server to do all the processing? After all crash_group_url is just
+constant_string + crash_group_id
+
+4) Same goes for updating crash report, in which according to
+http://docs.dpcs.apiary.io/#reference/crashes/crash-report/update-crash-report
+we have to specify both crash_report_id and crash_report_url

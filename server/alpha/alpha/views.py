@@ -1,6 +1,3 @@
-from django.shortcuts import render_to_response
-from django.template import RequestContext
-from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -10,43 +7,57 @@ from alpha.serializers import CrashGroupSerializer, \
     CrashReportSerializer, SolutionSerializer
 
 
+crash_reports_url = 'vd1/crash-reports/'
+crash_groups_url = 'vd1/crash-groups/'
+solutions_url = 'vd1/solutions/'
+
 # Adds the crash report to the database. Returns crash report's id on success.
 # Otherwise returns -1
 def add_crash_report(request):
     if request.method == 'POST':
         # assume the data is passed correctly ...
-        cr_id = request.data.get('crash_report_id', None)
-        cg_id = request.data.get('crash_group_id', None)
         std_err = request.data['crash_report']['stderr_output']
         ex_code = int(request.data['crash_report']['exit_code'])
         sysinfo = request.data['crash_report']['system_info']
+        application = request.data['crash_report']['application']
+
+        ############################### OPTION 2: ADDED PLATFORM & PACKAGES FIELD TO SYSTEMINFO model ######################################
+        # try:
+        #     system = SystemInfo.objects.get(platform=sysinfo["platform"],
+        #                                     packages=sysinfo["packages"],
+        #                                     version=sysinfo["version"])
+        # except SystemInfo.DoesNotExist:
+        #     system = SystemInfo(platform=sysinfo["platform"],
+        #                         packages=sysinfo["packages"],
+        #                         version=sysinfo["version"])
+        #    system.save()
+
+        if not "version" in sysinfo:
+            sysinfo["version"] = "unknown"
+
+        if not "name" in application:
+            application["name"] = "unknown"
+
+        if not "version" in application:
+            application["version"] = "unknown"
 
         try:
-            CrashReport.objects.get(pk=cr_id)
-            return -1
-        except CrashReport.DoesNotExist:
-            pass
-
-        cg = None
-        if cg_id:
-            try:
-                cg = CrashGroup.objects.get(crash_group_id=cg_id)
-            except CrashGroup.DoesNotExist:
-                cg = CrashGroup(crash_group_id=cg_id)
-                cg.save()
-
-        try:
-            system = SystemInfo.objects.get(platform=sysinfo["architecture"],
-                                            packages=sysinfo["packages"])
+            system = SystemInfo.objects.get(version=sysinfo["version"])
         except SystemInfo.DoesNotExist:
-            system = SystemInfo(platform=sysinfo["architecture"],
-                                packages=sysinfo['packages'])
+            system = SystemInfo(version=sysinfo["version"])
             system.save()
 
+        try:
+            app = Application.objects.get(name=application["name"],
+                                          version=application["version"])
+        except Application.DoesNotExist:
+            app = Application(name=application["name"],
+                              version=application["version"])
+            app.save()
+
         new_crash_report = CrashReport(
-            crash_report_id=cr_id, crash_group_id=cg,
             stderr_output=std_err, exit_code=ex_code,
-            systeminfo=system
+            system_info=system, application=app
         )
 
         new_crash_report.save()
@@ -60,24 +71,16 @@ def add_solution(request):
     if request.method == 'POST':
 
         # assume the data is passed correctly ...
-        sol_id = int(request.data['solution_id'])
-        cg_id = int(request.data['crash_group_id'])
-        shellscript = request.data['shell_script']
-
-        try:
-            Solution.objects.get(pk=sol_id)
-            return -1
-        except Solution.DoesNotExist:
-            pass
-
+        cg_id = int(request.data['solution']['crash_group_id'])
+        shellscript = request.data['solution']['shell_script']
         try:
             cg = CrashGroup.objects.get(pk=cg_id)
             new_sol = Solution(
-                solution_id=sol_id, crash_group_id=cg,
+                crash_group_id=cg,
                 shell_script=shellscript
             )
             new_sol.save()
-            return sol_id
+            return new_sol.solution_id
         except CrashGroup.DoesNotExist:
             return -1
 
@@ -85,19 +88,20 @@ def add_solution(request):
 
 
 # list all crash groups or create a new one
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'PUT'])
 def crash_group_list(request):
     if request.method == 'GET':
         crash_grp_list = CrashGroup.objects.all()
         serializer = CrashGroupSerializer(crash_grp_list, many=True)
         return Response(serializer.data)
 
-    elif request.method == 'POST':
-        serializer = CrashGroupSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == 'PUT':
+        new_crash_grp = CrashGroup()
+        new_crash_grp.save()
+        json_resp = {}
+        json_resp["crash_group_id"] = new_crash_grp.crash_group_id
+        json_resp["crash_group_url"] = crash_groups_url + str(new_crash_grp.crash_group_id)
+        return Response(json_resp, status=status.HTTP_200_OK)
 
 
 # view responsible for listing or deleting a crash group
@@ -109,12 +113,14 @@ def crash_group_detail(request, pk):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        serializer = CrashGroupSerializer(group)
-        return Response(serializer.data)
+        json_resp = {}
+        json_resp["crash_group_id"] = group.crash_group_id
+        json_resp["crash_group_url"] = crash_groups_url + str(pk)
+        return Response(json_resp, status=status.HTTP_200_OK)
 
     elif request.method == 'DELETE':
         group.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_200_OK)
 
 
 # view, responsible for listing all the crash reports and dealing
@@ -135,10 +141,23 @@ def crash_report_list(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
         report = CrashReport.objects.get(pk=added)
-        serializer = CrashReportSerializer(report)
-        # TO DO Should return sth like a response from here
+        json_resp = {}
+        json_resp["crash_report_ack"] = {}
+        json_resp["crash_report_ack"]["crash_report_id"] = added
+        json_resp["crash_report_ack"]["crash_report_url"] = crash_reports_url + str(added)
+        if report.crash_group_id == None:
+            json_resp["crash_report_ack"]["crash_group_id"] = "None"
+        else:
+            json_resp["crash_report_ack"]["crash_group_id"] = report.crash_group_id
+        json_resp["crash_report_ack"]["crash_group_url"] = crash_groups_url + str(report.crash_group_id)
+
+        # Since at the time of adding a report we can't know the solution to the problem, we can write the following:
+        json_resp["crash_report_ack"]["solution"] = {}
+        json_resp["crash_report_ack"]["solution"]["solution_id"] = "None"
+        json_resp["crash_report_ack"]["solution"]["solution_url"] = "None"
+        json_resp["crash_report_ack"]["solution"]["shell_script"] = "None"
         # http://docs.dpcs.apiary.io/#reference/crashes/crash-report-collection/send-a-new-report
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(json_resp, status=status.HTTP_201_CREATED)
 
 
 # view responsible for either: listing information on a specific crash report,
@@ -152,103 +171,50 @@ def crash_report_detail(request, pk):
 
     if request.method == 'GET':
         serializer = CrashReportSerializer(report)
-        return Response(serializer.data)
+        json_resp = {}
+        json_resp["crash_report"] = serializer.data
+        json_resp["crash_report"]["crash_report_url"] = crash_reports_url + str(pk)
+        json_resp["crash_report"]["crash_group_url"] = crash_groups_url + str(report.crash_group_id)
+        return Response(json_resp, status=status.HTTP_200_OK)
     elif request.method == 'PUT':
-        serializer = CrashReportSerializer(report, request.data, partial=True)
+        serializer = CrashReportSerializer(report, request.data['crash_report'], partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            # by now we have updated unnested fields.
+            # Now we have to update nested ones(application, system_info)
+            sysinfo_obj = request.data['crash_report'].get('system_info', None)
+            app_obj = request.data['crash_report'].get('application', None)
+            if app_obj:
+                try:
+                    app = Application.objects.get(
+                        name=request.data['crash_report']['application']['name'],
+                        version=request.data['crash_report']['application']['version']
+                    )
+                except Application.DoesNotExist:
+                    app = Application(
+                        name=request.data["crash_report"]["application"]["name"],
+                        version=request.data["crash_report"]["application"]["version"]
+                    )
+                    app.save()
+                report.application = app
+
+            #################### OPTION 2: possibly we have to change this to have compatibility with package & platform field ##############################
+            if sysinfo_obj:
+                try:
+                    sysinfo = SystemInfo.objects.get(version=request.data["crash_report"]["system_info"]["version"])
+                except SystemInfo.DoesNotExist:
+                    sysinfo = SystemInfo(version=request.data["crash_report"]["system_info"]["version"])
+                    sysinfo.save()
+                report.system_info = sysinfo
+            report.save()
+            return Response(status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
         report.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-# OPTIONAL! (quite ugly GUI)
-# view for listing or adding a crash group to the database, using basic
-# GUI(inputs+html+submit button)
-def crash_group_add(request):
-    groups = CrashGroup.objects.all()
-    if request.method == 'GET':
-        return render_to_response(
-            'alpha/crash_group_add.html',
-            {'groups': groups},
-            context_instance=RequestContext(request)
-        )
-    if request.method == 'POST':
-        crash_grp_id = request.POST.get('crash_group_id')
-        try:
-            CrashGroup.objects.get(crash_group_id=crash_grp_id)
-            return render_to_response(
-                'alpha/crash_group_add.html',
-                {'groups': groups,
-                 'msg': "This crash_group is already in database."},
-                context_instance=RequestContext(request)
-            )
-        except CrashGroup.DoesNotExist:
-            new_crash_grp = CrashGroup(crash_group_id=crash_grp_id)
-            new_crash_grp.save()
-            return render_to_response(
-                'alpha/crash_group_add.html',
-                {'groups': groups, 'msg': "Saved new crash_grp"},
-                context_instance=RequestContext(request)
-            )
-    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-
-# OPTIONAL! (quite ugly GUI)
-# view for listing or adding a crash report to the database, using basic
-#  GUI(inputs+html+submit button)
-def crash_report_add(request):
-    reports = CrashReport.objects.all()
-    if request.method == 'GET':
-        return render_to_response(
-            'alpha/crash_report_add.html',
-            {'reports': reports},
-            context_instance=RequestContext(request)
-        )
-    elif request.method == 'POST':
-        cr_id = int(request.POST.get('crash_report_id', None))
-        cg_id = int(request.POST.get('crash_group_id', None))
-        std_err = request.POST.get('stderr_output')
-        ex_code = int(request.POST.get('exit_code'))
-        app_name = request.POST.get('application_name')
-        app_v = request.POST.get('application_version')
-        sys_ver = request.POST.get('system_version')
-
-        try:
-            cg = CrashGroup.objects.get(crash_group_id=cg_id)
-        except CrashGroup.DoesNotExist:
-            cg = CrashGroup(crash_group_id=cg_id)
-            cg.save()
-        try:
-            app = Application.objects.get(name=app_name, version=app_v)
-        except Application.DoesNotExist:
-            app = Application(name=app_name, version=app_v)
-            app.save()
-
-        try:
-            system = SystemInfo.objects.get(version=sys_ver)
-        except SystemInfo.DoesNotExist:
-            system = SystemInfo(version=sys_ver)
-            system.save()
-
-        new_crash_report = CrashReport(
-            crash_report_id=cr_id, crash_group_id=cg,
-            stderr_output=std_err, exit_code=ex_code, application=app,
-            systeminfo=system
-        )
-        new_crash_report.save()
-
-        return render_to_response(
-            'alpha/crash_report_add.html',
-            {'reports': reports},
-            context_instance=RequestContext(request)
-        )
-    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        return Response(status=status.HTTP_200_OK)
 
 
 # view for displaying info about a solution, adding a solution or deleting it
@@ -261,12 +227,16 @@ def solution_detail(request, pk):
 
     if request.method == 'GET':
         serializer = SolutionSerializer(sol)
-        return Response(serializer.data)
+        json_resp = {}
+        json_resp["solution"] = serializer.data
+        json_resp["solution"]["solution_url"] = solutions_url + str(sol.solution_id)
+        json_resp["solution"]["crash_group_url"] = crash_groups_url + str(sol.crash_group_id)
+        return Response(json_resp, status=status.HTTP_200_OK)
     elif request.method == 'PUT':
-        serializer = SolutionSerializer(sol, request.data, partial=True)
+        serializer = SolutionSerializer(sol, request.data["solution"], partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(status=status.HTTP_201_CREATED)
         else:
             return Response(
                 serializer.errors,
@@ -274,7 +244,7 @@ def solution_detail(request, pk):
             )
     elif request.method == 'DELETE':
         sol.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_200_OK)
 
 
 # view used for listing all the solutions or adding a new one
@@ -289,13 +259,18 @@ def solution_list(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
         sol = Solution.objects.get(pk=new_sol_id)
-        serializer = SolutionSerializer(sol)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        json_resp = {}
+        json_resp["solution_ack"] = {}
+        json_resp["solution_ack"]["solution_id"] = sol.solution_id
+        json_resp["solution_ack"]["solution_url"] = solutions_url + str(sol.solution_id)
+        return Response(json_resp, status=status.HTTP_201_CREATED)
     elif request.method == 'GET':
         solutions = Solution.objects.all()
         serializer = SolutionSerializer(solutions, many=True)
         return Response(serializer.data)
 
+
 @api_view(['GET'])
 def paths(request):
-	return JsonResponse({"crash-reports": "vd1/crash-reports/", "crash-groups": "vd1/crash-groups/", "solutions": "vd1/solutions/"})
+    json_resp = {"crash-reports": crash_reports_url, "crash-groups": crash_groups_url, "solutions": solutions_url}
+    return Response(json_resp, status=status.HTTP_200_OK)

@@ -1,4 +1,4 @@
-Title: Application error message clustering and classification in order to find an already existing solution, via an offline agent. Initial research.
+Title: Clustering and classification of application's error messages for offline retrieval of an existing solution. Preliminary research.
 --------------------------
 
 Abstract 

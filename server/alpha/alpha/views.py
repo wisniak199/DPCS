@@ -1,3 +1,4 @@
+import ast
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -128,8 +129,17 @@ def crash_group_detail(request, pk):
 @api_view(['GET', 'POST'])
 def crash_report_list(request):
     if request.method == 'GET':
-        reports = CrashReport.objects.all()
-        serializer = CrashReportSerializer(reports, many=True)
+        search_string = (request.GET.get('search_string', '')).strip('"')
+        application_filter = request.GET.get('application_filter', '[]')
+        # possibly BIG security issue
+        application_filter = ast.literal_eval(application_filter)
+        reports_filtered = []
+        for report in CrashReport.objects.all():
+            if search_string in report.stderr_output and \
+               (len(application_filter) == 0 or \
+               report.application.name in application_filter):
+                reports_filtered.append(report)
+        serializer = CrashReportSerializer(reports_filtered, many=True)
         return Response(serializer.data)
 
     elif request.method == 'POST':
@@ -265,8 +275,12 @@ def solution_list(request):
         json_resp["solution_ack"]["solution_url"] = solutions_url + str(sol.solution_id)
         return Response(json_resp, status=status.HTTP_201_CREATED)
     elif request.method == 'GET':
-        solutions = Solution.objects.all()
-        serializer = SolutionSerializer(solutions, many=True)
+        search_string = request.GET.get('search_string', '').strip('"')
+        filtered_solutions = []
+        for solution in Solution.objects.all():
+            if search_string in solution.shell_script:
+                filtered_solutions.append(solution)
+        serializer = SolutionSerializer(filtered_solutions, many=True)
         return Response(serializer.data)
 
 
